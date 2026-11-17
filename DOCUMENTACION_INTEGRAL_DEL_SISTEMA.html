@@ -1,0 +1,2264 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Animallium OS — Documentación Integral del Sistema (WACRM & AI Core Hub)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-main: #090d16;
+      --bg-surface: #0f172a;
+      --bg-surface-elevated: #1e293b;
+      --bg-card: #131d31;
+      --border-subtle: #24324a;
+      --border-active: #3b82f6;
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      --primary: #f97316;
+      --primary-hover: #ea580c;
+      --primary-glow: rgba(249, 115, 22, 0.25);
+      --accent-blue: #0ea5e9;
+      --accent-cyan: #06b6d4;
+      --accent-purple: #8b5cf6;
+      --accent-emerald: #10b981;
+      --accent-rose: #f43f5e;
+      --accent-amber: #f59e0b;
+      --sidebar-width: 320px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      line-height: 1.65;
+      font-size: 15px;
+      overflow-x: hidden;
+    }
+
+    code, pre, .font-mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* Scrollbars */
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg-main); }
+    ::-webkit-scrollbar-thumb { background: var(--border-subtle); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #334155; }
+
+    /* Layout */
+    .app-container {
+      display: flex;
+      min-height: 100vh;
+      position: relative;
+    }
+
+    /* Sidebar Navigation */
+    .sidebar {
+      width: var(--sidebar-width);
+      background: var(--bg-surface);
+      border-right: 1px solid var(--border-subtle);
+      height: 100vh;
+      position: sticky;
+      top: 0;
+      display: flex;
+      flex-direction: column;
+      z-index: 40;
+      flex-shrink: 0;
+    }
+
+    .sidebar-header {
+      padding: 20px;
+      border-bottom: 1px solid var(--border-subtle);
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(8px);
+    }
+
+    .brand-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .brand-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #f97316 0%, #d97706 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      box-shadow: 0 4px 14px var(--primary-glow);
+    }
+
+    .brand-title {
+      font-size: 17px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: #fff;
+    }
+
+    .brand-sub {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent-cyan);
+      font-weight: 700;
+    }
+
+    .search-container {
+      padding: 12px 20px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .search-input {
+      width: 100%;
+      background: var(--bg-main);
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      padding: 8px 12px 8px 34px;
+      color: #fff;
+      font-size: 13px;
+      outline: none;
+      transition: all 0.2s ease;
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="%2364748b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>');
+      background-repeat: no-repeat;
+      background-position: 10px center;
+    }
+
+    .search-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px var(--primary-glow);
+    }
+
+    .nav-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px 12px;
+      list-style: none;
+    }
+
+    .nav-group-title {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-dim);
+      padding: 10px 12px 4px;
+      margin-top: 10px;
+    }
+
+    .nav-item a {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      border-radius: 8px;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 13.5px;
+      font-weight: 500;
+      transition: all 0.15s ease;
+    }
+
+    .nav-item a:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .nav-item.active a {
+      color: #fff;
+      background: rgba(249, 115, 22, 0.15);
+      border-left: 3px solid var(--primary);
+      font-weight: 600;
+    }
+
+    .sidebar-footer {
+      padding: 16px 20px;
+      border-top: 1px solid var(--border-subtle);
+      background: var(--bg-surface);
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn-action {
+      flex: 1;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      border: 1px solid var(--border-subtle);
+      background: var(--bg-card);
+      color: var(--text-main);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      text-decoration: none;
+    }
+
+    .btn-action:hover {
+      background: var(--bg-surface-elevated);
+      border-color: #475569;
+    }
+
+    /* Main Content Area */
+    .main-content {
+      flex: 1;
+      padding: 40px 60px 100px;
+      max-width: 1320px;
+      margin: 0 auto;
+    }
+
+    /* Top Controls Bar */
+    .top-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .breadcrumbs {
+      font-size: 13px;
+      color: var(--text-dim);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .breadcrumbs a { color: var(--accent-cyan); text-decoration: none; }
+
+    /* Badges & Pills */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 3px 8px;
+      border-radius: 9999px;
+      line-height: 1.2;
+    }
+
+    .badge-confirmed { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
+    .badge-inferred { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); }
+    .badge-unverified { background: rgba(100, 116, 139, 0.15); color: #94a3b8; border: 1px solid rgba(100, 116, 139, 0.3); }
+    .badge-critical { background: rgba(244, 63, 94, 0.15); color: #fb7185; border: 1px solid rgba(244, 63, 94, 0.3); }
+    .badge-high { background: rgba(249, 115, 22, 0.15); color: #fb923c; border: 1px solid rgba(249, 115, 22, 0.3); }
+    .badge-medium { background: rgba(234, 179, 8, 0.15); color: #facc15; border: 1px solid rgba(234, 179, 8, 0.3); }
+    .badge-low { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); }
+
+    /* Typography & Sections */
+    h1, h2, h3, h4, h5 { color: #fff; font-weight: 700; letter-spacing: -0.02em; }
+    h1 { font-size: 34px; line-height: 1.2; margin-bottom: 12px; }
+    h2 { font-size: 24px; margin-top: 48px; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid var(--border-subtle); display: flex; align-items: center; justify-content: space-between; }
+    h3 { font-size: 18px; margin-top: 28px; margin-bottom: 14px; color: #e2e8f0; }
+    h4 { font-size: 15px; margin-top: 20px; margin-bottom: 10px; color: var(--accent-cyan); text-transform: uppercase; letter-spacing: 0.05em; }
+
+    p { margin-bottom: 16px; color: #cbd5e1; }
+    ul, ol { margin-bottom: 20px; padding-left: 24px; color: #cbd5e1; }
+    li { margin-bottom: 8px; }
+
+    /* Cards & Containers */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .card-highlight {
+      border-left: 4px solid var(--primary);
+    }
+
+    .card-blue {
+      border-left: 4px solid var(--accent-blue);
+    }
+
+    .card-emerald {
+      border-left: 4px solid var(--accent-emerald);
+    }
+
+    .card-rose {
+      border-left: 4px solid var(--accent-rose);
+    }
+
+    /* Grid Layouts */
+    .grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+    .grid-4 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+
+    @media (max-width: 1024px) {
+      .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+      .sidebar { display: none; }
+      .main-content { padding: 24px; }
+    }
+
+    /* Tables */
+    .table-container {
+      width: 100%;
+      overflow-x: auto;
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      margin-bottom: 24px;
+      background: var(--bg-surface);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 13.5px;
+    }
+
+    th {
+      background: var(--bg-surface-elevated);
+      color: #e2e8f0;
+      padding: 12px 16px;
+      font-weight: 700;
+      border-bottom: 1px solid var(--border-subtle);
+      white-space: nowrap;
+    }
+
+    td {
+      padding: 12px 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      color: #cbd5e1;
+      vertical-align: top;
+    }
+
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: rgba(255, 255, 255, 0.02); }
+
+    /* Code Blocks */
+    .code-box {
+      background: #060a12;
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+
+    .code-header {
+      background: #0b1120;
+      padding: 8px 16px;
+      font-size: 12px;
+      color: var(--text-dim);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .code-title {
+      font-family: 'JetBrains Mono', monospace;
+      color: #94a3b8;
+      font-weight: 500;
+    }
+
+    pre code {
+      display: block;
+      padding: 16px;
+      overflow-x: auto;
+      font-size: 13px;
+      line-height: 1.5;
+      color: #e2e8f0;
+    }
+
+    /* Alerts */
+    .alert {
+      display: flex;
+      gap: 14px;
+      padding: 16px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .alert-info { background: rgba(14, 165, 233, 0.1); border: 1px solid rgba(14, 165, 233, 0.3); color: #bae6fd; }
+    .alert-warning { background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.3); color: #fef08a; }
+    .alert-success { background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: #a7f3d0; }
+    .alert-danger { background: rgba(244, 63, 94, 0.1); border: 1px solid rgba(244, 63, 94, 0.3); color: #fecdd3; }
+
+    /* Flowcharts / SVG */
+    .diagram-card {
+      background: #090e1a;
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      padding: 24px;
+      margin-bottom: 30px;
+      text-align: center;
+      overflow-x: auto;
+    }
+
+    .diagram-caption {
+      margin-top: 14px;
+      font-size: 12.5px;
+      color: var(--text-dim);
+      font-weight: 500;
+    }
+
+    /* Cover Hero */
+    .hero-cover {
+      background: linear-gradient(135deg, rgba(249, 115, 22, 0.1) 0%, rgba(14, 165, 233, 0.05) 50%, rgba(15, 23, 42, 0) 100%);
+      border: 1px solid rgba(249, 115, 22, 0.2);
+      border-radius: 20px;
+      padding: 48px;
+      margin-bottom: 40px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(249, 115, 22, 0.15);
+      border: 1px solid rgba(249, 115, 22, 0.4);
+      color: #fdba74;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 9999px;
+      margin-bottom: 16px;
+    }
+
+    .hero-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      margin-top: 24px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .hero-meta-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .hero-meta-label { color: var(--text-dim); }
+    .hero-meta-val { color: #fff; font-weight: 600; }
+
+    /* Print Styles */
+    @media print {
+      body { background: #fff; color: #000; font-size: 12pt; }
+      .sidebar, .top-controls, .search-container, .btn-action { display: none !important; }
+      .main-content { max-width: 100%; padding: 0; margin: 0; }
+      .card, .diagram-card, .table-container, .code-box {
+        background: #fff !important;
+        border: 1px solid #ccc !important;
+        box-shadow: none !important;
+        color: #000 !important;
+        page-break-inside: avoid;
+      }
+      h1, h2, h3, h4 { color: #000 !important; }
+      p, li, td, th { color: #222 !important; }
+      pre code { color: #000 !important; background: #f8f8f8 !important; }
+      .badge { border: 1px solid #666 !important; color: #000 !important; }
+    }
+  </style>
+</head>
+<body>
+<div class="app-container">
+
+  <!-- SIDEBAR NAVIGATION -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <a href="#portada" class="brand-pill">
+        <div class="brand-icon">🐾</div>
+        <div>
+          <div class="brand-title">Animallium OS</div>
+          <div class="brand-sub">WACRM & AI Core Hub</div>
+        </div>
+      </a>
+    </div>
+
+    <div class="search-container">
+      <input type="text" id="docSearch" class="search-input" placeholder="Buscar en la documentación..." onkeyup="filterDocs()">
+    </div>
+
+    <ul class="nav-list" id="navList">
+      <li class="nav-item"><a href="#portada"><span>📋</span> Portada & Ficha Técnica</a></li>
+      <li class="nav-item"><a href="#capitulo-1"><span>🌐</span> Cap 1. Visión General</a></li>
+      <li class="nav-item"><a href="#capitulo-2"><span>🏗️</span> Cap 2. Arquitectura General</a></li>
+      <li class="nav-item"><a href="#capitulo-3"><span>📁</span> Cap 3. Mapa del Código</a></li>
+      <li class="nav-item"><a href="#capitulo-4"><span>🧠</span> Cap 4. Lógica Interna</a></li>
+      <li class="nav-item"><a href="#capitulo-5"><span>🗄️</span> Cap 5. Datos e Integraciones</a></li>
+      <li class="nav-item"><a href="#capitulo-6"><span>⚡</span> Cap 6. Casos de Uso Reales</a></li>
+      <li class="nav-item"><a href="#capitulo-7"><span>📖</span> Cap 7. Manual de Usuario</a></li>
+      <li class="nav-item"><a href="#capitulo-8"><span>🤖</span> Cap 8. Automatizaciones & AI</a></li>
+      <li class="nav-item"><a href="#capitulo-9"><span>🛡️</span> Cap 9. Auditoría, Riesgos & Mejoras</a></li>
+      <li class="nav-item"><a href="#capitulo-10"><span>🧭</span> Cap 10. Guía Nuevos Agentes</a></li>
+      <li class="nav-item"><a href="#capitulo-11"><span>📚</span> Cap 11. Glosario Técnico</a></li>
+      <li class="nav-item"><a href="#capitulo-12"><span>🔍</span> Cap 12. Control & Cobertura</a></li>
+      
+      <li class="nav-group-title">Imprescindible para Agentes</li>
+      <li class="nav-item active"><a href="#lee-esto-primero"><span>🚀</span> LEE ESTO ANTES DE TRABAJAR</a></li>
+      <li class="nav-item"><a href="#mapa-consulta-rapida"><span>🗺️</span> Mapa de Consulta Rápida</a></li>
+    </ul>
+
+    <div class="sidebar-footer">
+      <button onclick="window.print()" class="btn-action">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V2h12v7"></path><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><path d="M6 14h12v8H6z"></path></svg>
+        Imprimir / PDF
+      </button>
+      <a href="#portada" class="btn-action">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="18 15 12 9 6 15"></polyline></svg>
+        Inicio
+      </a>
+    </div>
+  </aside>
+<main class="main-content">
+    <!-- PORTADA -->
+    <header id="portada" class="hero-cover">
+      <div class="hero-tag">BASE DE CONOCIMIENTO TÉCNICA Y OPERATIVA • INGENIERÍA INVERSA OFICIAL</div>
+      <h1>Ecosistema Animallium OS</h1>
+      <p style="font-size: 18px; color: #94a3b8; max-width: 900px; margin-bottom: 24px;">
+        Arquitectura unificada de WhatsApp CRM (WACRM) y Orquestador de Inteligencia Artificial (Animallium AI Core — Ex-N8N) para atención omnicanal, triaje veterinario, agendamiento de servicios y ventas phygital.
+      </p>
+
+      <div class="hero-meta">
+        <div class="hero-meta-item">
+          <span class="hero-meta-label">Versión CRM:</span>
+          <span class="hero-meta-val">WACRM v0.8.0 (Next.js 16 + Supabase)</span>
+        </div>
+        <div class="hero-meta-item">
+          <span class="hero-meta-label">Versión AI Core:</span>
+          <span class="hero-meta-val">Animallium AI Core v2.0.0 (FastAPI + GenAI)</span>
+        </div>
+        <div class="hero-meta-item">
+          <span class="hero-meta-label">Despliegue VPS:</span>
+          <span class="hero-meta-val">Hostinger 62.72.24.151 (Caddy + Docker)</span>
+        </div>
+        <div class="hero-meta-item">
+          <span class="hero-meta-label">Fecha de Auditoría:</span>
+          <span class="hero-meta-val">Noviembre 2026</span>
+        </div>
+        <div class="hero-meta-item">
+          <span class="hero-meta-label">Estado:</span>
+          <span class="badge badge-confirmed">Producción Activa</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- CAPÍTULO 1: VISIÓN GENERAL -->
+    <section id="capitulo-1" class="doc-section">
+      <h2>
+        <span>Capítulo 1. Visión General del Sistema</span>
+        <span class="badge badge-confirmed">AUDITADO</span>
+      </h2>
+
+      <div class="card card-highlight">
+        <h3>1.1. ¿Qué es el sistema y para qué sirve?</h3>
+        <p>
+          El <strong>Ecosistema Animallium OS</strong> es una solución integral y desacoplada de mensajería omnicanal, gestión de relaciones con clientes (CRM) e inteligencia artificial agentica, diseñada específicamente para el sector de bienestar y salud animal en Colombia y Latinoamérica.
+        </p>
+        <p>
+          El sistema resuelve el reto crítico de atender consultas concurrentes sobre mascotas mediante dos canales principales: el <strong>Web Chat</strong> embebido en el portal de Animallium (<a href="https://animallium.pet" target="_blank" style="color:var(--accent-cyan);">animallium.pet</a>) y la línea oficial de <strong>WhatsApp Business</strong> gestionada mediante <strong>WACRM</strong> (<a href="https://crm.animallium.pet/dashboard" target="_blank" style="color:var(--accent-cyan);">crm.animallium.pet</a>). Su objetivo primordial es brindar atención cálida, empática e instantánea 24/7 sin perder el control humano prioritario ni la capacidad transaccional de agendar citas veterinarias o recomendar productos físicos.
+        </p>
+      </div>
+
+      <div class="grid-2">
+        <div class="card card-blue">
+          <h4>Problemas de Negocio que Resuelve</h4>
+          <ul>
+            <li><strong>Saturación de canales de mensajería:</strong> Los clientes demandan respuestas en menos de 1 minuto sobre dietas, precios, vacunas y ubicaciones. La IA asume la primera línea reduciendo la carga del equipo humano en un 80%.</li>
+            <li><strong>Clasificación errónea de urgencias:</strong> Mascotas en riesgo vital (sangrado, convulsiones, intoxicación) reciben triaje inmediato con protocolos de primeros auxilios y alerta roja prioritaria a Telegram.</li>
+            <li><strong>Fuga de prospectos offline (Mundo Físico a Digital):</strong> Mediante el <em>Pasaporte Phygital</em> y el <em>Cazador Phygital</em>, un cliente que escanea un código QR en una veterinaria aliada recibe un seguimiento automatizado por WhatsApp a los 30 minutos.</li>
+            <li><strong>Pérdida de control ante respuestas erráticas de IA:</strong> La arquitectura implementa una <strong>Guarda de 10 segundos</strong> y un botón de <strong>[Tomar el control]</strong> en WACRM que silencia a la IA de inmediato si un asesor humano interviene.</li>
+          </ul>
+        </div>
+
+        <div class="card card-emerald">
+          <h4>Público Objetivo y Roles de Usuario</h4>
+          <ul>
+            <li><strong>Tutores de Mascotas (Clientes):</strong> Buscan orientación veterinaria rápida, compra de accesorios/alimentos o reserva de citas en clínicas aliadas.</li>
+            <li><strong>Asesores Humanos de Atención y Ventas:</strong> Gestionan la bandeja compartida de WACRM, supervisan respuestas automáticas, asignan tickets y cierran ventas de alto valor.</li>
+            <li><strong>Clínicas Veterinarias y Proveedores Aliados:</strong> Reciben pacientes derivados con información estructurada de triage previa y citas sincronizadas vía Fluent Booking / Google Calendar.</li>
+            <li><strong>Administradores y Directores de Operaciones:</strong> Supervisan métricas en tiempo real, volúmenes de mensajes, salud de la infraestructura y ejecuciones de agentes IA.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>1.2. Módulos y Capacidades Funcionales</h3>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Módulo</th>
+                <th>Plataforma / Ruta</th>
+                <th>Responsabilidad Operativa</th>
+                <th>Estado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>WACRM Core</strong></td>
+                <td><code>crm.animallium.pet</code> (Next.js 16)</td>
+                <td>Bandeja compartida WhatsApp, gestión de contactos, pipelines de ventas Kanban, difusiones masivas y webhooks v1.</td>
+                <td><span class="badge badge-confirmed">CONFIRMADO</span></td>
+              </tr>
+              <tr>
+                <td><strong>Animallium AI Core</strong></td>
+                <td><code>n8n.animallium.pet</code> (FastAPI Python)</td>
+                <td>Microservicio de IA que migró los flujos de N8N: router de intenciones Gemini, especialistas Ani/Sofi/Triaje, motor de rescate 24h.</td>
+                <td><span class="badge badge-confirmed">CONFIRMADO</span></td>
+              </tr>
+              <tr>
+                <td><strong>Canvas Monitor Nodos</strong></td>
+                <td><code>n8n.animallium.pet/dashboard</code></td>
+                <td>Interfaz gráfica web en tiempo real que emula y supera el lienzo de N8N mostrando sesiones activas, intervenciones de IA y jobs en cola.</td>
+                <td><span class="badge badge-confirmed">CONFIRMADO</span></td>
+              </tr>
+              <tr>
+                <td><strong>WordPress / WooCommerce</strong></td>
+                <td><code>animallium.pet</code></td>
+                <td>Catálogo de productos, endpoints REST para búsqueda de ítems, sincronización de usuarios phygital y plugin WCFM para aliados.</td>
+                <td><span class="badge badge-confirmed">CONFIRMADO</span></td>
+              </tr>
+              <tr>
+                <td><strong>Cazador Phygital & Recovery</strong></td>
+                <td>APScheduler en PostgreSQL</td>
+                <td>Automatización en segundo plano para seguimiento de QRs escaneados en 30 min y rescate de carritos o prospectos inactivos en 24h.</td>
+                <td><span class="badge badge-confirmed">CONFIRMADO</span></td>
+              </tr>
+              <tr>
+                <td><strong>Manual de Vida Engine</strong></td>
+                <td>Generador PDF/HTML dinámico</td>
+                <td>Creación personalizada del manual de cuidados del peludito con historia de raza, nutrición, conducta y código QR de validación física.</td>
+                <td><span class="badge badge-confirmed">CONFIRMADO</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- CAPÍTULO 2: ARQUITECTURA GENERAL -->
+    <section id="capitulo-2" class="doc-section">
+      <h2>
+        <span>Capítulo 2. Arquitectura General y Mapa de Red</span>
+        <span class="badge badge-confirmed">VERIFICADO</span>
+      </h2>
+
+      <div class="card">
+        <h3>2.1. Topología del Sistema e Infraestructura VPS</h3>
+        <p>
+          El sistema está desplegado en un servidor virtual privado (VPS) alojado en <strong>Hostinger (IP: 62.72.24.151)</strong>, corriendo bajo Linux Ubuntu con contenedores Docker orquestados por Docker Compose y expuestos a Internet a través de un proxy inverso seguro gestionado por <strong>Caddy Server</strong> con certificados SSL automáticos Let's Encrypt.
+        </p>
+
+        <!-- DIAGRAMA ARQUITECTURA SVG -->
+        <div class="diagram-card">
+          <svg viewBox="0 0 1100 620" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" style="background: #0b1120; border-radius: 12px; font-family: 'Plus Jakarta Sans', sans-serif;">
+            <defs>
+              <linearGradient id="gradMeta" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#25D366" />
+                <stop offset="100%" stop-color="#128C7E" />
+              </linearGradient>
+              <linearGradient id="gradWacrm" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#0284c7" />
+                <stop offset="100%" stop-color="#0369a1" />
+              </linearGradient>
+              <linearGradient id="gradAiCore" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#ea580c" />
+                <stop offset="100%" stop-color="#c2410c" />
+              </linearGradient>
+              <linearGradient id="gradSupabase" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#10b981" />
+                <stop offset="100%" stop-color="#047857" />
+              </linearGradient>
+              <linearGradient id="gradExt" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#8b5cf6" />
+                <stop offset="100%" stop-color="#6d28d9" />
+              </linearGradient>
+              <filter id="shadowBox" x="-10%" y="-10%" width="120%" height="120%">
+                <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000" flood-opacity="0.5"/>
+              </filter>
+            </defs>
+
+            <!-- TITULO -->
+            <text x="550" y="35" text-anchor="middle" fill="#ffffff" font-size="18" font-weight="800" letter-spacing="1">MAPA DE ARQUITECTURA INTEGRAL • ANIMALLIUM OS</text>
+
+            <!-- EXTERNAL CLIENTS -->
+            <rect x="40" y="70" width="190" height="110" rx="10" fill="#1e293b" stroke="#334155" stroke-width="1.5" filter="url(#shadowBox)"/>
+            <text x="135" y="98" text-anchor="middle" fill="#38bdf8" font-size="13" font-weight="700">CANALES CLIENTE</text>
+            <rect x="55" y="112" width="160" height="26" rx="5" fill="#0f172a"/>
+            <text x="135" y="129" text-anchor="middle" fill="#94a3b8" font-size="11">WhatsApp (+57 Móvil)</text>
+            <rect x="55" y="144" width="160" height="26" rx="5" fill="#0f172a"/>
+            <text x="135" y="161" text-anchor="middle" fill="#94a3b8" font-size="11">Web Chat (animallium.pet)</text>
+
+            <!-- FLECHA CLIENTE -> META / WEB -->
+            <path d="M 230 115 L 290 115" stroke="#25D366" stroke-width="2" marker-end="url(#arrow)" stroke-dasharray="4,4"/>
+
+            <!-- META CLOUD API -->
+            <rect x="290" y="70" width="170" height="110" rx="10" fill="url(#gradMeta)" filter="url(#shadowBox)"/>
+            <text x="375" y="105" text-anchor="middle" fill="#ffffff" font-size="14" font-weight="800">META CLOUD API</text>
+            <text x="375" y="125" text-anchor="middle" fill="#dcfce7" font-size="11">WhatsApp Business</text>
+            <text x="375" y="150" text-anchor="middle" fill="#f0fdf4" font-size="10">Webhooks & Messages</text>
+
+            <!-- CADDY PROXY -->
+            <rect x="520" y="60" width="160" height="210" rx="10" fill="#1e293b" stroke="#0ea5e9" stroke-width="2" filter="url(#shadowBox)"/>
+            <text x="600" y="90" text-anchor="middle" fill="#38bdf8" font-size="14" font-weight="800">CADDY PROXY</text>
+            <text x="600" y="108" text-anchor="middle" fill="#94a3b8" font-size="10">Port 80/443 SSL</text>
+            <line x1="535" y1="120" x2="665" y2="120" stroke="#334155" stroke-width="1"/>
+            <text x="600" y="142" text-anchor="middle" fill="#fdba74" font-size="11" font-weight="600">crm.animallium.pet</text>
+            <text x="600" y="158" text-anchor="middle" fill="#64748b" font-size="10">-> Host :3005 (WACRM)</text>
+            <text x="600" y="188" text-anchor="middle" fill="#fdba74" font-size="11" font-weight="600">n8n.animallium.pet</text>
+            <text x="600" y="204" text-anchor="middle" fill="#64748b" font-size="10">-> Host :5678 (AI Core)</text>
+            <text x="600" y="234" text-anchor="middle" fill="#94a3b8" font-size="10">VPS: 62.72.24.151</text>
+
+            <!-- FLECHA META -> CADDY -->
+            <path d="M 460 115 L 520 115" stroke="#0ea5e9" stroke-width="2"/>
+            <text x="490" y="108" text-anchor="middle" fill="#38bdf8" font-size="9">HTTPS</text>
+
+            <!-- WACRM CONTAINER -->
+            <rect x="740" y="60" width="320" height="175" rx="10" fill="url(#gradWacrm)" filter="url(#shadowBox)"/>
+            <text x="900" y="88" text-anchor="middle" fill="#ffffff" font-size="15" font-weight="800">WACRM (Next.js 16 + React 19)</text>
+            <text x="900" y="106" text-anchor="middle" fill="#bae6fd" font-size="11">WhatsApp CRM Template (v0.8.0)</text>
+            
+            <rect x="755" y="118" width="135" height="40" rx="5" fill="#0c4a6e"/>
+            <text x="822" y="135" text-anchor="middle" fill="#ffffff" font-size="10" font-weight="700">INBOX COMPARTIDO</text>
+            <text x="822" y="149" text-anchor="middle" fill="#7dd3fc" font-size="9">Boton [Tomar el control]</text>
+
+            <rect x="905" y="118" width="140" height="40" rx="5" fill="#0c4a6e"/>
+            <text x="975" y="135" text-anchor="middle" fill="#ffffff" font-size="10" font-weight="700">PUBLIC API v1</text>
+            <text x="975" y="149" text-anchor="middle" fill="#7dd3fc" font-size="9">Bearer Token Scopes</text>
+
+            <rect x="755" y="165" width="290" height="55" rx="5" fill="#082f49"/>
+            <text x="900" y="183" text-anchor="middle" fill="#e0f2fe" font-size="11" font-weight="600">OUTBOUND WEBHOOK DISPATCHER</text>
+            <text x="900" y="198" text-anchor="middle" fill="#93c5fd" font-size="10">Event: message.received (HMAC-SHA256)</text>
+            <text x="900" y="212" text-anchor="middle" fill="#7dd3fc" font-size="9">Fires to -> https://n8n.animallium.pet/webhook/wacrm-events</text>
+
+            <!-- CADDY -> WACRM -->
+            <path d="M 680 140 L 740 140" stroke="#0ea5e9" stroke-width="2"/>
+
+            <!-- SUPABASE CLUSTER -->
+            <rect x="740" y="270" width="320" height="110" rx="10" fill="url(#gradSupabase)" filter="url(#shadowBox)"/>
+            <text x="900" y="295" text-anchor="middle" fill="#ffffff" font-size="14" font-weight="800">SUPABASE CLOUD (PostgreSQL 15)</text>
+            <text x="900" y="312" text-anchor="middle" fill="#d1fae5" font-size="11">gohccnmmuihklwyacaeu.supabase.co</text>
+            <text x="900" y="332" text-anchor="middle" fill="#ffffff" font-size="10">59 Migraciones • RLS Policies • Auth & Storage</text>
+            <text x="900" y="348" text-anchor="middle" fill="#a7f3d0" font-size="10">contacts, conversations (ai_autoreply_disabled),</text>
+            <text x="900" y="364" text-anchor="middle" fill="#a7f3d0" font-size="10">messages, pipelines, deals, broadcasts, webhook_endpoints</text>
+
+            <!-- WACRM <-> SUPABASE -->
+            <path d="M 900 235 L 900 270" stroke="#10b981" stroke-width="2"/>
+
+            <!-- FLECHA WACRM WEBHOOK -> AI CORE (CURVA) -->
+            <path d="M 755 200 L 450 200 L 450 340" stroke="#f97316" stroke-width="2.5" fill="none" stroke-dasharray="5,5"/>
+            <text x="560" y="194" text-anchor="middle" fill="#f97316" font-size="10" font-weight="700">Webhook Dispatch (message.received)</text>
+
+            <!-- ANIMALLIUM AI CORE -->
+            <rect x="50" y="340" width="650" height="260" rx="12" fill="#0f172a" stroke="#f97316" stroke-width="2" filter="url(#shadowBox)"/>
+            <rect x="50" y="340" width="650" height="38" rx="10" fill="url(#gradAiCore)"/>
+            <text x="375" y="365" text-anchor="middle" fill="#ffffff" font-size="15" font-weight="800">ANIMALLIUM AI CORE v2.0 (FastAPI • Python 3.13 — Ex-N8N)</text>
+            <text x="630" y="365" text-anchor="end" fill="#ffedd5" font-size="11">:5678</text>
+
+            <!-- SUBBLOQUES AI CORE -->
+            <!-- 1. GUARDA -->
+            <rect x="70" y="390" width="130" height="75" rx="6" fill="#1e293b" stroke="#f59e0b" stroke-width="1"/>
+            <text x="135" y="412" text-anchor="middle" fill="#fbbf24" font-size="11" font-weight="700">1. GUARDA 10s</text>
+            <text x="135" y="428" text-anchor="middle" fill="#cbd5e1" font-size="9">Prioridad Humana</text>
+            <text x="135" y="442" text-anchor="middle" fill="#94a3b8" font-size="8.5">Chequeo is_ai_paused</text>
+            <text x="135" y="454" text-anchor="middle" fill="#94a3b8" font-size="8.5">Chequeo assigned_agent</text>
+
+            <!-- 2. ROUTER -->
+            <rect x="215" y="390" width="140" height="75" rx="6" fill="#1e293b" stroke="#38bdf8" stroke-width="1"/>
+            <text x="285" y="412" text-anchor="middle" fill="#38bdf8" font-size="11" font-weight="700">2. ROUTER GEMINI</text>
+            <text x="285" y="428" text-anchor="middle" fill="#cbd5e1" font-size="9">Pre-Filtro Regex (0-ms)</text>
+            <text x="285" y="442" text-anchor="middle" fill="#94a3b8" font-size="8.5">Gemini 3.5 Flash-Lite</text>
+            <text x="285" y="454" text-anchor="middle" fill="#94a3b8" font-size="8.5">Structured Output JSON</text>
+
+            <!-- 3. ESPECIALISTAS -->
+            <rect x="370" y="390" width="180" height="75" rx="6" fill="#1e293b" stroke="#10b981" stroke-width="1"/>
+            <text x="460" y="412" text-anchor="middle" fill="#34d399" font-size="11" font-weight="700">3. AGENTES ESPECIALISTAS</text>
+            <text x="460" y="428" text-anchor="middle" fill="#cbd5e1" font-size="9">Ani 🩺 (Productos WooCommerce)</text>
+            <text x="460" y="442" text-anchor="middle" fill="#cbd5e1" font-size="9">Sofi 🩺 (Citas y Agendamiento)</text>
+            <text x="460" y="454" text-anchor="middle" fill="#cbd5e1" font-size="9">Triaje Médico (Emergencias 24h)</text>
+
+            <!-- 4. ENGINES SECUNDARIOS -->
+            <rect x="565" y="390" width="120" height="75" rx="6" fill="#1e293b" stroke="#8b5cf6" stroke-width="1"/>
+            <text x="625" y="412" text-anchor="middle" fill="#c084fc" font-size="10" font-weight="700">4. ENGINES</text>
+            <text x="625" y="428" text-anchor="middle" fill="#cbd5e1" font-size="8.5">Cazador Phygital</text>
+            <text x="625" y="442" text-anchor="middle" fill="#cbd5e1" font-size="8.5">Manual de Vida</text>
+            <text x="625" y="454" text-anchor="middle" fill="#cbd5e1" font-size="8.5">Recovery 24h</text>
+
+            <!-- SERVICIOS CONECTADOS AL AI CORE -->
+            <rect x="70" y="480" width="615" height="105" rx="8" fill="#131d31" stroke="#334155" stroke-width="1"/>
+            <text x="85" y="502" fill="#94a3b8" font-size="11" font-weight="700">CONEXIONES & SINCRONIZACIÓN MULTICANAL (Background Detached Tasks):</text>
+            
+            <rect x="85" y="515" width="135" height="55" rx="5" fill="#0f172a"/>
+            <text x="152" y="533" text-anchor="middle" fill="#e2e8f0" font-size="10" font-weight="700">TELEGRAM BOT</text>
+            <text x="152" y="547" text-anchor="middle" fill="#94a3b8" font-size="8.5">Chat ID: -5057272289</text>
+            <text x="152" y="559" text-anchor="middle" fill="#f87171" font-size="8.5">Alertas Rojas Vitales</text>
+
+            <rect x="230" y="515" width="135" height="55" rx="5" fill="#0f172a"/>
+            <text x="297" y="533" text-anchor="middle" fill="#e2e8f0" font-size="10" font-weight="700">GOOGLE SHEETS</text>
+            <text x="297" y="547" text-anchor="middle" fill="#94a3b8" font-size="8.5">Pestaña "Respuestas"</text>
+            <text x="297" y="559" text-anchor="middle" fill="#34d399" font-size="8.5">Log 100% Leads</text>
+
+            <rect x="375" y="515" width="145" height="55" rx="5" fill="#0f172a"/>
+            <text x="447" y="533" text-anchor="middle" fill="#e2e8f0" font-size="10" font-weight="700">FIRESTORE & WP</text>
+            <text x="447" y="547" text-anchor="middle" fill="#94a3b8" font-size="8.5">Collection 'chats'</text>
+            <text x="447" y="559" text-anchor="middle" fill="#60a5fa" font-size="8.5">Crea Usuario Phygital WP</text>
+
+            <rect x="530" y="515" width="140" height="55" rx="5" fill="#0f172a"/>
+            <text x="600" y="533" text-anchor="middle" fill="#e2e8f0" font-size="10" font-weight="700">POSTGRES LOCAL</text>
+            <text x="600" y="547" text-anchor="middle" fill="#94a3b8" font-size="8.5">ai_sessions / messages</text>
+            <text x="600" y="559" text-anchor="middle" fill="#fbbf24" font-size="8.5">apscheduler_jobs (SQL)</text>
+
+            <!-- RESPUESTA AI CORE HACIA WACRM (RETORNO) -->
+            <path d="M 450 340 L 755 145" stroke="#34d399" stroke-width="2" stroke-dasharray="3,3"/>
+            <text x="590" y="275" text-anchor="middle" fill="#34d399" font-size="10" font-weight="700">POST /api/v1/messages (Envia WhatsApp)</text>
+          </svg>
+          <div class="diagram-caption">Figura 2.1 — Arquitectura de Flujo de Datos, Redes y Servicios entre Meta Cloud API, WACRM, Supabase y Animallium AI Core.</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>2.2. Tecnologías y Protocolos de Comunicación</h3>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Componente</th>
+                <th>Tecnología / Framework</th>
+                <th>Puerto / Red</th>
+                <th>Protocolo</th>
+                <th>Mecanismo de Autenticación</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Proxy Inverso</strong></td>
+                <td>Caddy 2.8+ (Docker)</td>
+                <td>80, 443 (Host público)</td>
+                <td>HTTPS / TLS v1.3</td>
+                <td>Certificados automáticos Let's Encrypt</td>
+              </tr>
+              <tr>
+                <td><strong>WACRM (App)</strong></td>
+                <td>Next.js 16.3.8, React 19, TypeScript, Tailwind v4</td>
+                <td>Interno 3000 -> Host 3005</td>
+                <td>HTTP / REST / SSR</td>
+                <td>Supabase JWT Cookie + Bearer API Key</td>
+              </tr>
+              <tr>
+                <td><strong>Animallium AI Core</strong></td>
+                <td>FastAPI 0.115+, Python 3.13, AsyncPG, APScheduler</td>
+                <td>Interno 8000 -> Host 8001 / Aliased 5678</td>
+                <td>HTTP / REST / JSON</td>
+                <td>HMAC-SHA256 (Signature) + Basic Auth (Dashboard)</td>
+              </tr>
+              <tr>
+                <td><strong>Base de Datos CRM</strong></td>
+                <td>Supabase Cloud (PostgreSQL 15 Managed)</td>
+                <td>443 (Cloud HTTPS) / 5432 (Pooler)</td>
+                <td>PostgreSQL / PostgREST</td>
+                <td><code>SUPABASE_SERVICE_ROLE_KEY</code> + RLS</td>
+              </tr>
+              <tr>
+                <td><strong>Base de Datos AI Core</strong></td>
+                <td>PostgreSQL 15 (Docker en red <code>root_default</code>)</td>
+                <td>5432 (Interno en contenedor <code>postgres</code>)</td>
+                <td>libpq / AsyncPG connection pool</td>
+                <td>Usuario y contraseña local privada</td>
+              </tr>
+              <tr>
+                <td><strong>LLM Engine</strong></td>
+                <td>Google GenAI SDK (Gemini 3.5 Flash-Lite / 2.5 Flash)</td>
+                <td>443 (Egress HTTPS a Google)</td>
+                <td>gRPC / HTTPS REST</td>
+                <td><code>GEMINI_API_KEY</code></td>
+              </tr>
+              <tr>
+                <td><strong>Tienda & CMS</strong></td>
+                <td>WordPress 6.7 + WooCommerce + WCFM + Fluent</td>
+                <td>443 (HTTPS animallium.pet)</td>
+                <td>WP REST API</td>
+                <td>Header <code>X-Animallium-Token</code></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- CAPÍTULO 3: MAPA DEL CÓDIGO -->
+    <section id="capitulo-3" class="doc-section">
+      <h2>
+        <span>Capítulo 3. Mapa del Código y Organización de Módulos</span>
+        <span class="badge badge-confirmed">AUDITADO</span>
+      </h2>
+
+      <div class="card">
+        <h3>3.1. Estructura del Repositorio WACRM (Frontend / Backend Next.js)</h3>
+        <p>
+          Ubicado en la ruta local <code>d:\ESCRITORIO\wacrm</code> y desplegado en el VPS en <code>/root/wacrm</code>. Utiliza la arquitectura App Router de Next.js 16 con server components, server actions y API route handlers.
+        </p>
+        
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Ruta en Proyecto</th>
+                <th>Lenguaje</th>
+                <th>Responsabilidad Principal</th>
+                <th>Archivos y Funciones Clave</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>src/app/(dashboard)/</code></td>
+                <td>TypeScript / React</td>
+                <td>Páginas de la interfaz administrativa del CRM (inbox, pipelines, contacts, broadcasts, automations, flows, agents, dashboard).</td>
+                <td><code>inbox/page.tsx</code>, <code>pipelines/page.tsx</code>, <code>dashboard/page.tsx</code>, <code>flows/page.tsx</code></td>
+              </tr>
+              <tr>
+                <td><code>src/app/api/whatsapp/webhook/</code></td>
+                <td>TypeScript</td>
+                <td>Endpoint principal que recibe webhooks de Meta Cloud API (inbound messages, status updates, template approvals).</td>
+                <td><code>route.ts</code> (1389 líneas): desencripta tokens, deduce contactos, despacha a flujos, automaciones y webhooks externos.</td>
+              </tr>
+              <tr>
+                <td><code>src/app/api/v1/</code></td>
+                <td>TypeScript</td>
+                <td>API pública autenticada con Bearer Tokens (API Keys) para clientes externos como AI Core.</td>
+                <td><code>messages/route.ts</code> (envío), <code>conversations/route.ts</code>, <code>contacts/route.ts</code>, <code>webhooks/route.ts</code></td>
+              </tr>
+              <tr>
+                <td><code>src/lib/whatsapp/</code></td>
+                <td>TypeScript</td>
+                <td>Capa de abstracción de WhatsApp: encriptación AES-256-GCM de tokens, llamadas a Graph API de Meta, formateo E.164, descarga de medios.</td>
+                <td><code>meta-api.ts</code>, <code>encryption.ts</code>, <code>phone-utils.ts</code>, <code>webhook-signature.ts</code></td>
+              </tr>
+              <tr>
+                <td><code>src/lib/webhooks/</code></td>
+                <td>TypeScript</td>
+                <td>Motor de entrega de webhooks salientes hacia servicios suscritos (incluyendo Animallium AI Core) con firma HMAC-SHA256 en header <code>X-Wacrm-Signature</code>.</td>
+                <td><code>deliver.ts</code>: calcula HMAC con timestamp y gestiona reintentos con backoff.</td>
+              </tr>
+              <tr>
+                <td><code>src/lib/automations/</code></td>
+                <td>TypeScript</td>
+                <td>Motor de automatizaciones nativas sin código basadas en triggers (mensaje recibido, tag añadido) y acciones (enviar plantilla, esperar respuesta).</td>
+                <td><code>engine.ts</code>: ejecución secuencial y resolución de condiciones lógicas.</td>
+              </tr>
+              <tr>
+                <td><code>src/lib/flows/</code></td>
+                <td>TypeScript / ReactFlow</td>
+                <td>Constructor visual de árboles de conversación interactivos (@xyflow/react) con botones interactivos y captura de datos.</td>
+                <td><code>engine.ts</code>: avance de estados según respuestas y clics en botones de lista/quick reply.</td>
+              </tr>
+              <tr>
+                <td><code>supabase/migrations/</code></td>
+                <td>SQL</td>
+                <td>59 archivos de migración SQL idempotentes que definen el esquema completo en Supabase PostgreSQL.</td>
+                <td><code>001_initial_schema.sql</code> a <code>059_dashboard_overview.sql</code></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>3.2. Estructura del Microservicio Animallium AI Core (Ex-N8N)</h3>
+        <p>
+          Ubicado en la ruta local <code>d:\ESCRITORIO\Animallium_Master\animallium-ai-core</code> y desplegado en el VPS en <code>/root/animallium-ai-core</code>. Construido sobre FastAPI, AsyncPG, APScheduler y Google GenAI SDK.
+        </p>
+
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Archivo / Módulo</th>
+                <th>Lenguaje</th>
+                <th>Responsabilidad Técnica</th>
+                <th>Funciones Críticas</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>app/main.py</code></td>
+                <td>Python 3.13</td>
+                <td>Punto de entrada de FastAPI, ciclo de vida (lifespan), definición de endpoints de webhook y despachador de tareas asíncronas no bloqueantes.</td>
+                <td><code>webhook_wacrm_events</code>, <code>_process_wacrm_background</code>, <code>webhook_chat_main</code>, <code>webhook_qr_escaneado</code></td>
+              </tr>
+              <tr>
+                <td><code>app/services/ai_orchestrator.py</code></td>
+                <td>Python 3.13</td>
+                <td>Núcleo de inteligencia agentica: enrutador determinista + LLM, prompts especializados de Ani, Sofi y Triaje, function calling y extracción de entidades.</td>
+                <td><code>handle_chat_turn</code>, <code>_decide_route</code>, <code>_run_agent</code>, <code>_execute_tool</code>, <code>_extract_entities_from_text</code></td>
+              </tr>
+              <tr>
+                <td><code>app/services/wacrm.py</code></td>
+                <td>Python 3.13</td>
+                <td>Cliente HTTP para consumir la API v1 de WACRM y consultar el estado de pausa humana directamente en Supabase REST.</td>
+                <td><code>is_ai_paused</code>, <code>get_conversation</code>, <code>send_whatsapp_text</code>, <code>verify_wacrm_signature</code></td>
+              </tr>
+              <tr>
+                <td><code>app/services/wp_tools.py</code></td>
+                <td>Python 3.13</td>
+                <td>Herramientas conectadas a WordPress/WooCommerce mediante endpoints JSON internos con token de autenticación.</td>
+                <td><code>buscar_productos</code>, <code>buscar_servicios</code>, <code>chequear_slots</code>, <code>crear_usuario_phygital</code></td>
+              </tr>
+              <tr>
+                <td><code>app/services/cazador_phygital.py</code></td>
+                <td>Python 3.13</td>
+                <td>Automatización del beneficio phygital con programador persistente APScheduler (30 min tras escaneo de QR).</td>
+                <td><code>schedule_cazador_followup</code>, <code>run_cazador_job</code>, <code>init_scheduler</code></td>
+              </tr>
+              <tr>
+                <td><code>app/services/manual_vida.py</code></td>
+                <td>Python 3.13</td>
+                <td>Generador del documento personalizado de vida animal con renderizado HTML, consulta de QR SVG y envío a Telegram/WhatsApp.</td>
+                <td><code>generate_and_send_manual</code>, <code>_fetch_qr_svg</code>, <code>_render_html</code></td>
+              </tr>
+              <tr>
+                <td><code>app/services/recovery.py</code></td>
+                <td>Python 3.13</td>
+                <td>Recuperación de prospectos tras 24 horas de inactividad, actualización de deals en el pipeline de Supabase y mensaje de seguimiento.</td>
+                <td><code>schedule_inactivity_check</code>, <code>run_abandoned_recovery_job</code>, <code>_update_or_create_deal</code></td>
+              </tr>
+              <tr>
+                <td><code>app/services/sync_external.py</code></td>
+                <td>Python 3.13</td>
+                <td>Sincronización desacoplada con Google Sheets (GSpread), Firebase Firestore, alertas en Telegram Bot y creación de usuario WP.</td>
+                <td><code>run_post_turn_sync</code>, <code>_append_sheets_blocking</code>, <code>_sync_firestore_blocking</code></td>
+              </tr>
+              <tr>
+                <td><code>app/dashboard.py</code></td>
+                <td>Python / HTML</td>
+                <td>Servidor del Canvas visual interactivo disponible en <code>https://n8n.animallium.pet/dashboard</code> para monitorear el flujo de nodos y métricas.</td>
+                <td><code>get_stats</code>, <code>get_dashboard_html</code></td>
+              </tr>
+              <tr>
+                <td><code>app/db.py</code></td>
+                <td>Python / SQL</td>
+                <td>Gestor de conexiones con AsyncPG, inicialización de esquema y control de deduplicación atómica mediante <code>ai_processed_events</code>.</td>
+                <td><code>init_db</code>, <code>claim_event</code>, <code>get_or_create_session</code>, <code>update_session</code></td>
+              </tr>
+              <tr>
+                <td><code>app/dropi_scout.py</code></td>
+                <td>Python 3.12</td>
+                <td>Motor de prospección y curaduría de catálogo Dropi integrado con auditoría automática de stock y precios de proveedores.</td>
+                <td><code>scout_dropi_catalog</code>, <code>audit_live_products</code>, <code>publish_draft_catalog</code></td>
+              </tr>
+              <tr>
+                <td><code>app/neuro_copy.py</code></td>
+                <td>Python 3.12</td>
+                <td>Redactor médico veterinario de conversión con validación de copy (CopyValidator &gt;= 85/100) y ganchos emocionales contextuales.</td>
+                <td><code>build_neuro_review_html</code>, <code>validate_copy</code></td>
+              </tr>
+              <tr>
+                <td><code>app/proposals.py</code></td>
+                <td>Python / HTML</td>
+                <td>Generador de propuestas comerciales B2B y portal administrativo con vista en vivo del Centro de Mando (<code>/centro-mando</code>).</td>
+                <td><code>generate_proposal</code>, <code>serve_centro_mando</code>, <code>add_lead_to_wacrm</code></td>
+              </tr>
+              <tr>
+                <td><code>app/scout.py</code></td>
+                <td>Python 3.12</td>
+                <td>Scraping y benchmarking de precios y competidores (Puppis, Homecenter, Bing) con cálculo financiero de márgenes brutos.</td>
+                <td><code>scout_search</code>, <code>compute_financials</code>, <code>list_scout_candidates</code></td>
+              </tr>
+              <tr>
+                <td><code>app/actions.py</code></td>
+                <td>Python 3.12</td>
+                <td>Rutas rápidas de ejecución de acciones administrativas y disparadores de sincronización manual de catálogos y órdenes.</td>
+                <td><code>trigger_sync</code>, <code>get_actions_status</code></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- CAPÍTULO 4: LÓGICA Y FUNCIONAMIENTO INTERNO -->
+    <section id="capitulo-4" class="doc-section">
+      <h2>
+        <span>Capítulo 4. Lógica y Funcionamiento Interno</span>
+        <span class="badge badge-confirmed">VERIFICADO</span>
+      </h2>
+
+      <div class="card card-highlight">
+        <h3>4.1. La Guarda de Prioridad Humana (Espera de 10 Segundos)</h3>
+        <p>
+          Uno de los mecanismos más avanzados de Animallium AI Core es su sistema de protección contra colisiones entre agentes humanos y agentes de inteligencia artificial. A diferencia de bots convencionales que responden en milisegundos interrumpiendo al asesor, este sistema aplica un protocolo estricto de 5 pasos antes de emitir cualquier respuesta en WhatsApp:
+        </p>
+
+        <!-- DIAGRAMA GUARDA 10S SVG -->
+        <div class="diagram-card">
+          <svg viewBox="0 0 900 320" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" style="background: #0b1120; border-radius: 12px; font-family: 'Plus Jakarta Sans', sans-serif;">
+            <!-- INICIO -->
+            <rect x="30" y="130" width="140" height="60" rx="8" fill="#1e293b" stroke="#38bdf8" stroke-width="1.5"/>
+            <text x="100" y="155" text-anchor="middle" fill="#38bdf8" font-size="11" font-weight="700">INBOUND MSG</text>
+            <text x="100" y="172" text-anchor="middle" fill="#cbd5e1" font-size="9">Meta -> WACRM</text>
+
+            <path d="M 170 160 L 220 160" stroke="#64748b" stroke-width="2"/>
+
+            <!-- HTTP 200 INMEDIATO -->
+            <rect x="220" y="60" width="150" height="55" rx="8" fill="#064e3b" stroke="#10b981" stroke-width="1.5"/>
+            <text x="295" y="84" text-anchor="middle" fill="#a7f3d0" font-size="11" font-weight="700">HTTP 200 (&lt;5ms)</text>
+            <text x="295" y="100" text-anchor="middle" fill="#d1fae5" font-size="9">Evita Timeout WACRM</text>
+
+            <!-- ESPERA 10S -->
+            <rect x="220" y="130" width="150" height="60" rx="8" fill="#78350f" stroke="#f59e0b" stroke-width="2"/>
+            <text x="295" y="155" text-anchor="middle" fill="#fef08a" font-size="12" font-weight="800">asyncio.sleep(10s)</text>
+            <text x="295" y="172" text-anchor="middle" fill="#fde68a" font-size="9">Ventana para Humano</text>
+
+            <path d="M 170 160 L 220 85" stroke="#10b981" stroke-width="1.5" stroke-dasharray="3,3"/>
+            <path d="M 370 160 L 420 160" stroke="#64748b" stroke-width="2"/>
+
+            <!-- FILTRO DE CONDICIONES -->
+            <rect x="420" y="100" width="220" height="120" rx="8" fill="#1e293b" stroke="#f43f5e" stroke-width="1.5"/>
+            <text x="530" y="125" text-anchor="middle" fill="#fda4af" font-size="11" font-weight="700">3 VERIFICACIONES CRÍTICAS</text>
+            <text x="530" y="145" text-anchor="middle" fill="#cbd5e1" font-size="9">1. ¿is_ai_paused? (Botón Tomar)</text>
+            <text x="530" y="165" text-anchor="middle" fill="#cbd5e1" font-size="9">2. ¿assigned_agent_id != null?</text>
+            <text x="530" y="185" text-anchor="middle" fill="#cbd5e1" font-size="9">3. ¿Mensaje outbound reciente?</text>
+            <text x="530" y="205" text-anchor="middle" fill="#94a3b8" font-size="8.5">Consulta REST a Supabase</text>
+
+            <!-- CAMINO ABORTO -->
+            <path d="M 530 100 L 530 50 L 700 50" stroke="#f43f5e" stroke-width="2" stroke-dasharray="4,4"/>
+            <rect x="700" y="25" width="160" height="50" rx="6" fill="#4c0519" stroke="#f43f5e" stroke-width="1"/>
+            <text x="780" y="46" text-anchor="middle" fill="#fecdd3" font-size="10" font-weight="700">IA SE RETIRA EN SILENCIO</text>
+            <text x="780" y="62" text-anchor="middle" fill="#fda4af" font-size="8.5">Control 100% Humano</text>
+
+            <!-- CAMINO CONTINUAR -->
+            <path d="M 640 160 L 700 160" stroke="#10b981" stroke-width="2"/>
+            <rect x="700" y="130" width="160" height="60" rx="8" fill="#064e3b" stroke="#10b981" stroke-width="1.5"/>
+            <text x="780" y="155" text-anchor="middle" fill="#a7f3d0" font-size="11" font-weight="700">IA INTERVIENE</text>
+            <text x="780" y="172" text-anchor="middle" fill="#d1fae5" font-size="9">Router -> Especialista</text>
+          </svg>
+          <div class="diagram-caption">Figura 4.1 — Flujograma de la Guarda de 10 segundos y Verificaciones de Intervención Humana (app/main.py:156-232).</div>
+        </div>
+
+        <div class="code-box">
+          <div class="code-header">
+            <span class="code-title">app/main.py — Segmento de Guarda en _process_wacrm_background</span>
+            <span>Python 3.13</span>
+          </div>
+          <pre><code># 1. Espera de 10 segundos para dar espacio prioritario al asesor
+wait_sec = max(settings.wacrm_human_wait_seconds, 1.0)
+await asyncio.sleep(wait_sec)
+
+# 2. Verificar si el humano oprimió [Tomar el control] en el CRM
+if await wacrm.is_ai_paused(conversation_id):
+    print(f"[wacrm-events] IA pausada manualmente en WACRM", flush=True)
+    return
+
+# 3. Si un agente humano se asignó la conversación durante la espera, la IA aborta
+conv = await wacrm.get_conversation(conversation_id)
+if conv and conv.get("assigned_agent_id"):
+    print(f"[wacrm-events] agente humano asignado ({conv.get('assigned_agent_id')})", flush=True)
+    return
+
+# 4. Si un humano respondió un mensaje de salida durante los 10s, la IA no interviene
+recent = await wacrm.get_recent_conversation_messages(conversation_id, limit=3)
+if recent and recent[0].get("direction") == "outbound":
+    print(f"[wacrm-events] un humano ya contestó durante la espera", flush=True)
+    return</code></pre>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>4.2. El Enrutador Inteligente (Router Determinista + Gemini Structured Output)</h3>
+        <p>
+          Para maximizar la velocidad de respuesta y minimizar el consumo innecesario de tokens de API de Google GenAI, la función <code>_decide_route</code> implementa un sistema híbrido de dos niveles:
+        </p>
+        <ul>
+          <li><strong>Nivel 1: Filtro Rápido Heurístico (Latencia 0 ms):</strong> Evalúa expresiones regulares y palabras clave directas. Si el mensaje contiene términos de peligro vital (<em>sangrado, convulsiones, envenenamiento</em>), se clasifica instantáneamente como <code>URGENCIA</code>. Si contiene intenciones de negocio o profesionales independientes (<em>afiliar negocio, convenio, soy paseador, hotel para mascotas, guardería canina, adiestrador</em>), pasa a <code>ALIADO_B2B</code>. Si contiene compras (<em>precio, arnés, collar, comida, snacks</em>), pasa a <code>PRODUCTO</code>. Si contiene solicitudes de servicios por tutores (<em>veterinario, baño, vacuna, paseos, hotel, guardería, adiestramiento, spa, transporte, cremación</em>), pasa a <code>SERVICIO</code>.</li>
+          <li><strong>Nivel 2: Clasificador Cognitivo Gemini 3.5 Flash-Lite:</strong> Se ejecuta en casos contextuales o ambiguos. Envía el historial y el mensaje estructurado con un esquema JSON estricto (Pydantic <code>RouterDecision</code>) que clasifica entre <code>URGENCIA</code>, <code>ALIADO_B2B</code>, <code>SERVICIO</code>, <code>PRODUCTO</code>, <code>SOPORTE</code> y <code>RECEPCION</code> reconociendo la taxonomía ampliada de servicios de bienestar animal.</li>
+        </ul>
+
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Ruta Asignada</th>
+                <th>Agente Especialista</th>
+                <th>Herramientas (Tools) Asignadas</th>
+                <th>Objetivo y Formato de Salida</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>ALIADO_B2B</code></td>
+                <td><strong>Camila 🤝 (Alianzas B2B)</strong></td>
+                <td>Sin tools (Lead Gate B2B autónomo)</td>
+                <td>Atiende a dueños de clínicas veterinarias, peluquerías, pet shops, guarderías, hoteles para mascotas, paseadores de perros, adiestradores caninos, spas, transporte o crematorios que desean afiliarse a Animallium. Presenta la propuesta de valor B2B (flujo de tutores, validación QR y marketplace), captura datos de negocio (NIT, ciudad, servicios) y detona alerta de negocio en Telegram y Trato automático en el CRM.</td>
+              </tr>
+              <tr>
+                <td><code>PRODUCTO</code></td>
+                <td><strong>Ani 🛍️</strong></td>
+                <td><code>buscar_productos(keyword)</code></td>
+                <td>Busca en el inventario WooCommerce y genera tarjetas HTML con botón estilizado de compra naranja y precio formateado en COP.</td>
+              </tr>
+              <tr>
+                <td><code>SERVICIO</code></td>
+                <td><strong>Sofi 🩺</strong></td>
+                <td><code>buscar_servicios(ciudad)</code>, <code>chequear_slots(id_calendario)</code></td>
+                <td>Gestiona agendamiento de citas clínicas, vacunación, cirugías, baños, peluquería, guarderías, hoteles para mascotas, paseadores de perros, adiestramiento canino, spa, transporte y cremación. Identifica proveedores por ciudad y genera enlaces directos a agendas de reserva.</td>
+              </tr>
+              <tr>
+                <td><code>URGENCIA</code></td>
+                <td><strong>Triage Médico</strong></td>
+                <td><code>buscar_servicios(ciudad)</code></td>
+                <td>Brinda primeros auxilios inmediatos, busca la clínica de urgencias 24h más cercana y detona una <strong>Alerta Roja Vital</strong> en Telegram.</td>
+              </tr>
+              <tr>
+                <td><code>SOPORTE</code></td>
+                <td><strong>Soporte Garantías</strong></td>
+                <td>Sin tools</td>
+                <td>Informa cortésmente que el canal es de asesoría y ventas, derivando quejas y reclamos al formulario de contacto humano (SLA 48h).</td>
+              </tr>
+              <tr>
+                <td><code>RECEPCION</code></td>
+                <td><strong>Recepcionista IA</strong></td>
+                <td>Sin tools</td>
+                <td>Bienvenida empática, indaga si el usuario busca productos para su mascota o agendamiento de servicios clínicos.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>4.3. Extracción Automática de Entidades y Memoria Cross-Session</h3>
+        <p>
+          En cada turno de conversación, el sistema ejecuta de forma silenciosa la función <code>_extract_entities_from_text</code> y el motor de persistencia en PostgreSQL:
+        </p>
+        <ol>
+          <li><strong>Teléfono Celular Colombiano:</strong> Detecta patrones de 10 dígitos iniciando por <code>3XXXXXXXXX</code> (e.g. 3001234567) o prefijo <code>573XXXXXXXXX</code>, limpiando espacios, guiones y puntos.</li>
+          <li><strong>Nombre del Tutor:</strong> Extrae expresiones como <em>"soy Carlos"</em>, <em>"me llamo Laura"</em>, filtrando palabras de saludo, adverbios conversacionales (<em>nuevamente, otra vez</em>) o días de la semana con lista negra.</li>
+          <li><strong>Especie Animal:</strong> Mapea términos caninos (<em>perro, cachorra, labrador, criollo</em>) o felinos (<em>gato, michi, minino</em>).</li>
+          <li><strong>Ciudad de Residencia:</strong> Reconoce las principales ciudades de Colombia (<em>Bogotá, Medellín, Cali, Barranquilla, Bucaramanga, Chía, Pereira...</em>).</li>
+          <li><strong>Cédula o NIT de Negocio:</strong> Captura patrones documentales de 6 a 12 dígitos con dígito de verificación opcional (e.g., <em>901456789-3, CC 1018456789</em>).</li>
+          <li><strong>Correo Electrónico:</strong> Identifica correos corporativos y personales para vinculación B2B y despacho del Manual de Vida.</li>
+          <li><strong>Nombre del Establecimiento B2B:</strong> Extrae automáticamente nombres de clínicas, veterinarias, pet shops y guarderías (e.g., <em>Veterinaria San Patricio</em>).</li>
+        </ol>
+        <p>
+          <strong>Motor de Memoria Persistente Cross-Session:</strong> Cuando entra un mensaje nuevo, el sistema ejecuta <code>find_session_by_whatsapp(phone, exclude_session_id)</code> y <code>find_session_by_cedula(cedula, exclude_session_id)</code>. Si el cliente o aliado ya se había registrado previamente en cualquier otro canal o sesión, el sistema recupera su nombre, mascota, beneficios activos (descuento 10%, E-book), citas agendadas y ID Phygital. Esto permite que el agente salude reconociendo su historial sin volver a solicitar datos ya entregados.
+        </p>
+        <p>
+          <strong>Ventana Temporal de Memoria Conversacional (Regla de las 24 Horas):</strong><br>
+          Para mantener la naturalidad y evitar respuestas descontextualizadas o saludos repetitivos, el orquestador calcula el tiempo transcurrido desde el último mensaje registrado (<code>diff_hours = (now_utc - last_ts).total_seconds() / 3600.0</code>):
+        </p>
+        <ul>
+          <li><strong>Si &Delta;t &le; 24.0 horas (Modo Continuidad Activa):</strong> Se inyecta un banner contextual en el System Prompt indicando que el cliente vuelve a escribir dentro del mismo día. Las preguntas de seguimiento sobre tiempos de entrega (<em>"¿cuánto demora el envío?"</em>), costos (<em>"¿cuánto vale el domicilio?"</em>) o agendamiento retienen automáticamente al especialista asignado (<strong>Ani</strong> o <strong>Sofi</strong>), evitando falsos positivos de enrutamiento a Soporte y suprimiendo saludos de bienvenida redundantes.</li>
+          <li><strong>Si &Delta;t &gt; 24.0 horas (Modo Reencuentro Cordial):</strong> El sistema reconoce al cliente por su nombre y mascota registrada, pero abre un turno conversacional limpio y fresco preguntando amablemente qué necesita hoy sin arrastrar carritos o citas expiradas.</li>
+        </ul>
+        <p>
+          <strong>Adaptador de Canal (<code>_format_for_channel</code>):</strong> Cuando el canal de salida es WhatsApp, el sistema convierte automáticamente los botones y enlaces HTML (<code>&lt;a href="URL"&gt;Texto&lt;/a&gt;</code>) a texto plano con enlaces directos visibles y asteriscos para negritas (<code>*texto*</code>), garantizando que no se filtren etiquetas HTML crudas al usuario final.
+        </p>
+      </div>
+
+      <div class="card card-highlight">
+        <h3>4.4. WhatsApp Interactivo y Buffer Anti-Ráfagas (Debouncing)</h3>
+        <p>
+          Para elevar la experiencia en WhatsApp Business API mediante WACRM, se implementaron dos capacidades críticas:
+        </p>
+        <ul>
+          <li><strong>Botones Interactivos de WhatsApp:</strong> En el menú de recepción o selección rápida, el orquestador envía cargas interactivas nativas de WhatsApp (tipo <code>button</code> con títulos limitados estrictamente a 20 caracteres según la especificación de Meta: <code>🛍️ Productos</code>, <code>🩺 Citas / Servicios</code>, <code>🤝 Afiliar Negocio</code>) con fallback automático e indoloro a texto enriquecido si el cliente usa una versión antigua de WhatsApp Web.</li>
+          <li><strong>Buffer Anti-Ráfagas (Debouncing de 10s):</strong> Cuando un usuario envía múltiples mensajes cortos seguidos (e.g., <em>"Hola"</em>, <em>"buenos días"</em>, <em>"tengo una pregunta"</em>), el webhook detecta los eventos consecutivos en la guarda de 10 segundos, aborta la tarea previa y agrupa todo el contexto en una sola consulta consolidada al modelo Gemini. Esto ahorra costos de API y evita que la IA responda a fragmentos incompletos.</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h3>4.5. Segregación Estricta de Pipelines en CRM (Ventas vs. Aliados B2B)</h3>
+        <p>
+          Para garantizar una gestión comercial profesional sin mezclar compradores finales con socios comerciales, WACRM y el AI Core manejan dos embudos independientes en Supabase:
+        </p>
+        <ul>
+          <li><strong>Pipeline de Ventas B2C (<code>9205fb84-71b6-4db6-87f9-5702bc189cae</code>):</strong> Gestiona a los tutores de mascotas. Sus etapas automáticas incluyen <code>Nuevo lead</code>, <code>En Asesoría</code>, <code>Seguimiento Inactivo (24h)</code> (disparado tras 22.5h de silencio) y <code>No Contestó / Archivado</code> (a las 48h).</li>
+          <li><strong>Pipeline de Captación de Aliados B2B (<code>b89e997c-a6f0-4d08-b635-d9eecb87e209</code>):</strong> Gestionado exclusivamente por <strong>Camila 🤝</strong>. Todo prospecto de clínica, veterinaria, pet shop, hotel, guardería, paseador de perros o spa entra directamente en la etapa <code>Contacto inicial</code> (<code>8ae9dfd4-d35a-4130-a964-89aabfca156e</code>), generando simultáneamente una alerta detallada en el bot de Telegram con el tipo de negocio y cédula/NIT.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- CAPÍTULO 5: BASES DE DATOS E INTEGRACIONES -->
+    <section id="capitulo-5" class="doc-section">
+      <h2>
+        <span>Capítulo 5. Bases de Datos e Integraciones</span>
+        <span class="badge badge-confirmed">AUDITADO</span>
+      </h2>
+
+      <div class="card">
+        <h3>5.1. Modelado de Datos en Supabase (WACRM)</h3>
+        <p>
+          El CRM opera sobre un clúster administrado de PostgreSQL 15 en Supabase Cloud. Dispone de 59 migraciones idempotentes que estructuran las siguientes entidades principales:
+        </p>
+
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Tabla</th>
+                <th>Campos Destacados</th>
+                <th>Propósito en el Negocio</th>
+                <th>Políticas RLS</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>accounts</code></td>
+                <td><code>id, name, default_currency, created_at</code></td>
+                <td>Multi-tenancy y cuentas de trabajo compartidas.</td>
+                <td>Aislada por pertenencia en <code>account_members</code>.</td>
+              </tr>
+              <tr>
+                <td><code>account_members</code></td>
+                <td><code>account_id, user_id, role ('owner','admin','agent','viewer')</code></td>
+                <td>Control de acceso basado en roles para el equipo.</td>
+                <td>Verificación por RPCs seguras con SECURITY DEFINER.</td>
+              </tr>
+              <tr>
+                <td><code>contacts</code></td>
+                <td><code>id, name, phone, tags, custom_fields, account_id</code></td>
+                <td>Directorio unificado de clientes y tutores de mascotas.</td>
+                <td>Deduplicación por número telefónico normalizado.</td>
+              </tr>
+              <tr>
+                <td><code>conversations</code></td>
+                <td><code>id, contact_id, status, assigned_agent_id, ai_autoreply_disabled, unread_count</code></td>
+                <td>Hilos de conversación de WhatsApp. Incluye la bandera <strong>ai_autoreply_disabled</strong> que frena a la IA cuando un humano toma el control.</td>
+                <td>Actualizada en tiempo real por webhooks de Meta.</td>
+              </tr>
+              <tr>
+                <td><code>messages</code></td>
+                <td><code>id, conversation_id, direction ('inbound'/'outbound'), content_type, text, media_url, whatsapp_message_id, status</code></td>
+                <td>Historial cronológico de mensajes de texto, audios, imágenes y plantillas.</td>
+                <td>Sincronización bidireccional con Meta Cloud API.</td>
+              </tr>
+              <tr>
+                <td><code>pipelines / pipeline_stages / deals</code></td>
+                <td><code>id, title, stage_id, conversation_id, contact_id, status</code></td>
+                <td>Tablero Kanban de ventas. Utilizado por el motor de <em>Recovery</em> para mover prospectos a 'Seguimiento 24h'.</td>
+                <td>Scoped por cuenta del CRM.</td>
+              </tr>
+              <tr>
+                <td><code>broadcasts / broadcast_recipients</code></td>
+                <td><code>id, template_name, total_count, delivered_count, status</code></td>
+                <td>Campañas masivas de difusión usando plantillas aprobadas por Meta.</td>
+                <td>Procesamiento por lotes y reanudación automática.</td>
+              </tr>
+              <tr>
+                <td><code>webhook_endpoints / webhook_deliveries</code></td>
+                <td><code>id, url, secret, events, is_active</code></td>
+                <td>Registro de webhooks salientes. Envía eventos <code>message.received</code> firmados con HMAC hacia Animallium AI Core.</td>
+                <td>Gestión por administradores y clave API pública.</td>
+              </tr>
+              <tr>
+                <td><code>api_keys</code></td>
+                <td><code>id, name, key_hash, scopes, account_id</code></td>
+                <td>Tokens Bearer SHA-256 para integraciones externas seguras.</td>
+                <td>Validación server-side con servicio administrativo.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>5.2. Base de Datos Local de Animallium AI Core (PostgreSQL)</h3>
+        <p>
+          Ubicada en el contenedor Docker <code>postgres</code> en la red interna del VPS. Alberga el estado transaccional del microservicio de inteligencia artificial:
+        </p>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Tabla</th>
+                <th>Campos Principales</th>
+                <th>Función Operativa</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>ai_sessions</code></td>
+                <td><code>session_id, canal, whatsapp, nombre, mascota, raza, ciudad, id_phygital, datos_completos, phygital_synced, manual_sent, ultimo_agente</code></td>
+                <td>Almacena el perfil 360° acumulado del cliente y el estado del embudo de datos en memoria persistente.</td>
+              </tr>
+              <tr>
+                <td><code>ai_messages</code></td>
+                <td><code>id, session_id, role ('user'/'assistant'), content, agente, created_at</code></td>
+                <td>Memoria conversacional contextual (últimos 10 turnos) alimentada a los prompts de Gemini.</td>
+              </tr>
+              <tr>
+                <td><code>ai_citas</code></td>
+                <td><code>id, nombre_cliente, whatsapp, email, clinica, servicio, ciudad, fecha_cita, raw_payload</code></td>
+                <td>Registro de solicitudes de citas clínicas recibidas desde Fluent Booking o webhooks web.</td>
+              </tr>
+              <tr>
+                <td><code>ai_processed_events</code></td>
+                <td><code>event_id, created_at</code></td>
+                <td>Mecanismo de <strong>deduplicación atómica (claim_event)</strong>. Impide que reintentos de red de Meta o WACRM provoquen llamadas dobles al LLM.</td>
+              </tr>
+              <tr>
+                <td><code>apscheduler_jobs</code></td>
+                <td><code>id, next_run_time, job_state</code></td>
+                <td>Tabla nativa de SQLAlchemyJobStore donde persisten los temporizadores de <em>El Cazador Phygital</em> y <em>Recovery 24h</em> ante reinicios.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>5.3. Matriz Exhaustiva de Integraciones Externas</h3>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Sistema Conectado</th>
+                <th>Finalidad</th>
+                <th>Dirección</th>
+                <th>Disparador / Evento</th>
+                <th>Protocolo / Formato</th>
+                <th>Resultado Operativo</th>
+                <th>Manejo de Fallos</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Meta Cloud API</strong></td>
+                <td>Recepción y envío oficial de mensajes de WhatsApp.</td>
+                <td>Bidireccional</td>
+                <td>Mensaje recibido del cliente / Solicitud de envío desde WACRM.</td>
+                <td>HTTPS Webhook con HMAC-SHA256 y REST Graph API v21.0.</td>
+                <td>Mensaje entregado en el móvil del cliente en &lt; 2s.</td>
+                <td>Reintentos automáticos de Meta; cola de mensajes fallidos en WACRM.</td>
+              </tr>
+              <tr>
+                <td><strong>WACRM &rarr; AI Core</strong></td>
+                <td>Despacho de eventos de mensaje entrante para procesamiento por IA.</td>
+                <td>Saliente (WACRM &rarr; AI)</td>
+                <td>Evento <code>message.received</code> en WACRM.</td>
+                <td>POST HTTPS a <code>/webhook/wacrm-events</code> con firma <code>X-Wacrm-Signature</code>.</td>
+                <td>AI Core responde HTTP 200 en &lt; 5ms e inicia guarda asíncrona de 10s.</td>
+                <td>WACRM registra fallo en <code>webhook_deliveries</code> si el endpoint no responde.</td>
+              </tr>
+              <tr>
+                <td><strong>AI Core &rarr; WACRM</strong></td>
+                <td>Envío del texto generado por el agente especialista a WhatsApp.</td>
+                <td>Saliente (AI &rarr; WACRM)</td>
+                <td>Finalización del turno en <code>ai_orchestrator</code>.</td>
+                <td>POST HTTPS a <code>/api/v1/messages</code> con Bearer API Key.</td>
+                <td>WACRM inserta el mensaje en Supabase y lo despacha a Meta.</td>
+                <td>Fallback con mensaje de cortesía si la API no está disponible.</td>
+              </tr>
+              <tr>
+                <td><strong>Google GenAI (Gemini)</strong></td>
+                <td>Clasificación de intenciones y generación estructurada de respuestas.</td>
+                <td>Saliente (AI &rarr; Google)</td>
+                <td>Turno de chat no determinista o ejecución de agente especialista.</td>
+                <td>gRPC / HTTPS con Gemini 3.5 Flash-Lite / 2.5 Flash.</td>
+                <td>JSON estructurado con respuesta, agente asignado y entidades detectadas.</td>
+                <td>Función <code>generate_content_resilient</code> reintenta con modelo alternativo.</td>
+              </tr>
+              <tr>
+                <td><strong>WordPress / WooCommerce</strong></td>
+                <td>Búsqueda de productos físicos en catálogo y creación de usuario Phygital.</td>
+                <td>Bidireccional</td>
+                <td>Tool <code>buscar_productos</code> ejecutada por Ani / Captura completa de datos.</td>
+                <td>POST HTTPS a <code>/wp-json/animallium/v1/chat-agent</code> con token.</td>
+                <td>Retorna lista de productos con enlaces y crea cuenta de usuario WP.</td>
+                <td>Responde con mensaje amigable de stock no disponible en caso de error.</td>
+              </tr>
+              <tr>
+                <td><strong>Telegram Bot</strong></td>
+                <td>Monitoreo en vivo de conversaciones y alertas rojas veterinarias.</td>
+                <td>Saliente (AI &rarr; Telegram)</td>
+                <td>Cada turno de usuario finalizado / Detección de urgencia vital.</td>
+                <td>HTTPS Telegram Bot API hacia chat grupal <code>-5057272289</code>.</td>
+                <td>Notificación instantánea visible para todo el equipo directivo.</td>
+                <td>Captura de excepción en hilo separado sin interrumpir al usuario.</td>
+              </tr>
+              <tr>
+                <td><strong>Google Sheets</strong></td>
+                <td>Registro centralizado de leads y prospectos para auditoría de ventas.</td>
+                <td>Saliente (AI &rarr; GSheets)</td>
+                <td>Turno de conversación procesado con datos relevantes.</td>
+                <td>OAuth2 Service Account con Google Drive / Sheets API v4.</td>
+                <td>Añade fila en pestaña 'Respuestas' de la hoja maestra de cálculo.</td>
+                <td>Ejecución en hilo independiente (<code>asyncio.to_thread</code>); reintenta en próximo turno.</td>
+              </tr>
+              <tr>
+                <td><strong>Firebase Firestore</strong></td>
+                <td>Copia de seguridad en tiempo real de sesiones y perfiles de mascotas.</td>
+                <td>Saliente (AI &rarr; Firebase)</td>
+                <td>Lead con Pasaporte Phygital generado o teléfono confirmado.</td>
+                <td>Google Cloud Firestore SDK en colección <code>chats</code>.</td>
+                <td>Documento JSON indexado con metadatos de interacción y mascota.</td>
+                <td>Operación desacoplada protegida contra fallos de red.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- CAPÍTULO 6: PROCESOS Y CASOS DE USO REALES -->
+    <section id="capitulo-6" class="doc-section">
+      <h2>
+        <span>Capítulo 6. Procesos y Casos de Uso Reales Reconstruidos</span>
+        <span class="badge badge-confirmed">DOCUMENTADO</span>
+      </h2>
+
+      <!-- CASO 1 -->
+      <div class="card card-highlight">
+        <h3>CASO DE USO 1: Mensaje Entrante por WhatsApp y Respuesta de IA con Guarda de 10s</h3>
+        <p><strong>Objetivo:</strong> Atender a un tutor de mascota de forma automática en WhatsApp garantizando que los humanos tengan prioridad para contestar primero si están disponibles.</p>
+        <p><strong>Actor:</strong> Cliente en WhatsApp &bull; <strong>Sistemas:</strong> Meta API, WACRM, Supabase, Animallium AI Core, Google GenAI.</p>
+        <p><strong>Condiciones iniciales:</strong> WACRM operativo en puerto 3005; webhook registrado en Meta; webhook saliente configurado hacia <code>https://n8n.animallium.pet/webhook/wacrm-events</code>.</p>
+        
+        <h4>Desarrollo Paso a Paso:</h4>
+        <ol>
+          <li>El cliente envía: <em>"Hola, quisiera saber qué alimento hipoalergénico tienen para un perrito con alergias"</em> al WhatsApp oficial.</li>
+          <li>Meta Cloud API despacha un webhook firmado a <code>https://crm.animallium.pet/api/whatsapp/webhook</code>.</li>
+          <li>WACRM valida la firma HMAC con <code>META_APP_SECRET</code>, inserta el contacto y el mensaje entrante en Supabase (tabla <code>messages</code>).</li>
+          <li>WACRM despacha un webhook con evento <code>message.received</code> a <code>https://n8n.animallium.pet/webhook/wacrm-events</code>.</li>
+          <li>El microservicio AI Core valida la firma <code>X-Wacrm-Signature</code>, registra el ID para evitar duplicados y responde <code>HTTP 200 {"status": "accepted"}</code> en menos de 5 milisegundos.</li>
+          <li>En un hilo secundario asíncrono, AI Core ejecuta una pausa de 10 segundos (<code>asyncio.sleep(10)</code>).</li>
+          <li>Transcurridos los 10 segundos, AI Core consulta Supabase: si ningún humano asignó la conversación ni oprimió <strong>[Tomar el control]</strong>, el turno procede.</li>
+          <li>El Router inteligente evalúa el texto y determina la categoría <code>PRODUCTO</code>.</li>
+          <li>Se invoca al agente <strong>Ani 🩺</strong>, quien ejecuta la tool <code>buscar_productos("alimento hipoalergenico perro")</code> contra WooCommerce.</li>
+          <li>Ani genera la respuesta con precios, recomendaciones y enlace de compra adaptado a WhatsApp (sin HTML crudo).</li>
+          <li>AI Core realiza un POST a <code>https://crm.animallium.pet/api/v1/messages</code> con el Bearer API Token.</li>
+          <li>WACRM despacha el mensaje al teléfono del cliente a través de Meta y programa el seguimiento de inactividad de 24 horas.</li>
+        </ol>
+
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Escenario Alternativo</th>
+                <th>Comportamiento del Sistema</th>
+                <th>Resultado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Un asesor humano responde dentro de los 10 segundos de espera.</td>
+                <td>AI Core detecta un mensaje <code>outbound</code> reciente en la conversación.</td>
+                <td>La IA se silencia de inmediato y cancela su respuesta.</td>
+              </tr>
+              <tr>
+                <td>El asesor humano hace clic en <strong>[Tomar el control]</strong> en WACRM.</td>
+                <td>Supabase actualiza <code>ai_autoreply_disabled = true</code>.</td>
+                <td>La verificación <code>wacrm.is_ai_paused()</code> detecta la bandera y aborta.</td>
+              </tr>
+              <tr>
+                <td>El cliente envía un audio o imagen en lugar de texto.</td>
+                <td>AI Core detecta <code>content_type != 'text'</code> en el payload.</td>
+                <td>AI Core ignora el evento y lo deja 100% en manos del asesor humano en la bandeja.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- CASO 2 -->
+      <div class="card card-rose">
+        <h3>CASO DE USO 2: Triage Médico de Emergencia y Alerta Roja Vital a Telegram</h3>
+        <p><strong>Objetivo:</strong> Brindar soporte clínico urgente ante una situación de peligro inminente para la vida de la mascota y notificar al equipo veterinario humano.</p>
+        <p><strong>Actor:</strong> Tutor angustiado &bull; <strong>Sistemas:</strong> AI Core, Telegram Bot, WooCommerce Clinics API.</p>
+        
+        <h4>Desarrollo Paso a Paso:</h4>
+        <ol>
+          <li>El usuario escribe: <em>"¡Ayuda por favor, mi perrito comió veneno para ratas y está convulsionando!"</em>.</li>
+          <li>El filtro determinista de latencia 0 ms detecta las palabras <em>"convulsion"</em> y <em>"veneno"</em>, asignando inmediatamente la ruta <code>URGENCIA</code>.</li>
+          <li>El agente de Triage Médico responde con empatía extrema, instrucciones de soporte vital (no inducir el vómito sin saber la sustancia, mantener vías aéreas despejadas) y solicita la ciudad de inmediato si no se conoce.</li>
+          <li>De forma simultánea e instantánea, <code>sync_external.py</code> dispara una <strong>ALERTA ROJA - EMERGENCIA VITAL</strong> al grupo de Telegram:
+            <div class="alert alert-danger" style="margin-top:10px;">
+              🚨 <b>ALERTA ROJA - EMERGENCIA VITAL</b> 🚨<br>
+              📞 <b>Teléfono Tutor:</b> +57 310...<br>
+              💬 <b>Síntomas Reportados:</b> Comió veneno para ratas y está convulsionando.<br>
+              🗣️ <b>Estado:</b> Paciente en camino.
+            </div>
+          </li>
+          <li>Si el usuario indica su ciudad (ej. Bogotá), el agente ejecuta <code>buscar_servicios("bogota")</code> localizando la clínica aliada con atención 24 horas y entregando su dirección de inmediato.</li>
+        </ol>
+      </div>
+
+      <!-- CASO 3 -->
+      <div class="card card-emerald">
+        <h3>CASO DE USO 3: El Cazador Phygital (Seguimiento Automático 30m Post-Visita Física)</h3>
+        <p><strong>Objetivo:</strong> Convertir una experiencia presencial en una veterinaria aliada en una recompensa digital y fidelización a través de WhatsApp.</p>
+        <p><strong>Actor:</strong> Comercio aliado y Cliente &bull; <strong>Sistemas:</strong> Webhook QR, PostgreSQL APScheduler, Google GenAI, WACRM.</p>
+
+        <h4>Desarrollo Paso a Paso:</h4>
+        <ol>
+          <li>El cliente visita una clínica veterinaria aliada y presenta su código QR o Pasaporte Phygital.</li>
+          <li>El personal del negocio escanea el QR en <code>https://animallium.pet/aliados/validar/[ID]</code>.</li>
+          <li>WordPress detona un POST webhook hacia <code>https://n8n.animallium.pet/webhook/qr_escaneado</code> con el payload del cliente (ID Phygital, nombre, teléfono).</li>
+          <li>La función <code>schedule_cazador_followup</code> programa un trabajo persistente en APScheduler con un retardo exacto de 30 minutos (<code>run_at = now + 30m</code>).</li>
+          <li>El job se almacena en la tabla <code>apscheduler_jobs</code> de PostgreSQL, protegiéndolo contra caídas o reinicios del servidor.</li>
+          <li>Cumplidos los 30 minutos, el worker activa <code>run_cazador_job</code>:
+            <ul>
+              <li>Invoca a Gemini con el rol de <strong>Sofi 🩺</strong> para redactar un mensaje cálido de máximo 45 palabras agradeciendo la visita a la sede física.</li>
+              <li>Añade un consejo de hidratación/cuidado para el peludito e invita al tutor a revisar sus beneficios en el portal web.</li>
+            </ul>
+          </li>
+          <li>AI Core envía el mensaje directamente al WhatsApp del tutor a través de <code>wacrm.send_whatsapp_text</code>.</li>
+          <li>Se envía un reporte de ejecución exitosa al bot de monitoreo en Telegram.</li>
+        </ol>
+      </div>
+
+      <!-- CASO 4 -->
+      <div class="card card-blue">
+        <h3>CASO DE USO 4: Generación y Entrega del "Manual de Vida" Personalizado</h3>
+        <p><strong>Objetivo:</strong> Crear un documento de alto valor técnico y emocional cuando el usuario completa su perfil (nombre, teléfono y mascota).</p>
+        <p><strong>Actor:</strong> Sistema Automatizado &bull; <strong>Sistemas:</strong> AI Core, QRServer API, Google GenAI, Telegram, WordPress.</p>
+        
+        <h4>Desarrollo Paso a Paso:</h4>
+        <ol>
+          <li>Al detectarse que el cliente completó su nombre, WhatsApp válido y especie de mascota, el sistema genera un ID Phygital único (ej. <code>ANI-7771-B84A</code>).</li>
+          <li>El sistema llama a <code>crear_usuario_phygital</code> en WordPress para activar su cuenta y habilitar su 10% de descuento comercial.</li>
+          <li>Se activa <code>generate_and_send_manual</code> en <code>manual_vida.py</code>:
+            <ul>
+              <li>Gemini redacta el contenido veterinario y etológico: historia evolutiva de la raza, tabla de nutrición balanceada y consejos de comportamiento.</li>
+              <li>El motor consulta a <code>https://api.qrserver.com/v1/create-qr-code/</code> para generar en tiempo real el SVG vectorial del QR que enlaza a la validación física del pasaporte.</li>
+              <li>Se ensambla una plantilla HTML profesional con la identidad corporativa de Animallium (azul marino y naranja), tipografía Inter y maquetación de revista digital.</li>
+            </ul>
+          </li>
+          <li>El documento se despacha en formato digital para que el cliente lo consulte y lo presente en sedes aliadas.</li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- CAPÍTULO 7: MANUAL DE USUARIO SIN CONOCIMIENTOS TÉCNICOS -->
+    <section id="capitulo-7" class="doc-section">
+      <h2>
+        <span>Capítulo 7. Manual de Usuario (Explicación para No Programadores)</span>
+        <span class="badge badge-confirmed">FÁCIL COMPRENSIÓN</span>
+      </h2>
+
+      <div class="card card-emerald">
+        <h3>7.1. ¿Cómo entender este sistema si no sabes programar?</h3>
+        <p style="font-size: 16px; line-height: 1.7;">
+          Imagina que <strong>Animallium</strong> es un gran <strong>hospital y tienda veterinaria</strong> en tu ciudad:
+        </p>
+        <ul>
+          <li><strong>WhatsApp y el Web Chat</strong> son como las <em>puertas de entrada</em> por donde los tutores de perritos y gatitos entran a pedir ayuda.</li>
+          <li><strong>WACRM (crm.animallium.pet)</strong> es la <em>oficina central de asesores humanos</em>. Es una pantalla donde los recepcionistas ven a todos los clientes que están en la fila, leen sus mensajes y pueden hablarles directamente.</li>
+          <li><strong>Animallium AI Core (n8n.animallium.pet)</strong> es como un <strong>equipo de robots asistentes muy inteligentes y educados</strong> que ayudan cuando los humanos están ocupados:
+            <ul>
+              <li><strong>La Guarda de 10 segundos:</strong> Es la regla de oro del hospital: <em>"Siempre deja que un médico o asesor humano salude primero si está presente"</em>. La IA espera pacientemente 10 segundos antes de intervenir.</li>
+              <li><strong>El Router Inteligente:</strong> Es como la recepcionista del mostrador. Escucha lo que necesitas y te lleva con el especialista correcto.</li>
+              <li><strong>Ani 🩺:</strong> Es la encargada de la tienda de productos y alimentos. Si pides comida o juguetes, busca en las estanterías y te da el enlace exacto para comprarlo con 10% de descuento.</li>
+              <li><strong>Sofi 🩺:</strong> Es la asistente veterinaria de citas. Pregunta en qué ciudad estás y busca una clínica cercana para que lleves a tu mascota a baño, vacunas o consulta.</li>
+              <li><strong>El Médico de Triaje:</strong> Si un animalito tiene un accidente, le explica al tutor cómo mantenerlo a salvo y manda una alarma roja a los teléfonos de los directores.</li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h3>7.2. Guía Visual Pantalla por Pantalla del CRM (crm.animallium.pet)</h3>
+
+        <h4>1. Pantalla del Panel (Dashboard Principal)</h4>
+        <p>Es la primera vista al ingresar. Aquí puedes ver de un solo vistazo la salud del negocio:</p>
+        <ul>
+          <li><strong>Clientes en espera:</strong> Muestra cuántas personas están esperando que alguien les conteste y cuánto tiempo llevan esperando.</li>
+          <li><strong>Mediana de primera respuesta:</strong> Qué tan rápido atiende el equipo en promedio (ej. 14 horas o 5 minutos).</li>
+          <li><strong>Volumen de mensajes:</strong> Gráfica interactiva de barras moradas y azules que muestra los días y horas con más mensajes entrantes y salientes.</li>
+          <li><strong>Cola de respuestas:</strong> Lista ordenada de clientes urgentes que requieren atención prioritaria.</li>
+        </ul>
+
+        <h4>2. Bandeja de Entrada (Inbox de WhatsApp)</h4>
+        <p>Es el lugar donde pasas la mayor parte de tu día de trabajo:</p>
+        <ul>
+          <li><strong>Columna izquierda (Lista de Chats):</strong> Muestra los números y nombres de las personas que han escrito. Un círculo verde indica mensajes no leídos.</li>
+          <li><strong>Centro (Conversación):</strong> Ves los mensajes del cliente (a la izquierda) y las respuestas tuyas o de la IA (a la derecha).</li>
+          <li><strong>El Botón Mágico [Tomar el control]:</strong> Si ves que la IA está hablando con un cliente y tú quieres atenderlo personalmente, <strong>haz clic en [Tomar el control]</strong> en la parte superior. Al hacerlo, la IA se detiene en seco y no volverá a escribir en esa conversación.</li>
+          <li><strong>Asignar compañero:</strong> Puedes transferirle la conversación a otro asesor del equipo desde el menú desplegable.</li>
+          <li><strong>Escribir y adjuntar:</strong> Abajo tienes la caja de texto para redactar, enviar audios o adjuntar fotos y documentos.</li>
+        </ul>
+
+        <h4>3. Contactos y Pipelines (Embudo de Ventas)</h4>
+        <ul>
+          <li><strong>Contactos:</strong> Directorio tipo agenda donde puedes buscar clientes por nombre o teléfono, agregar etiquetas (como <em>#perro, #bogota, #interesado-alimento</em>) y ver su historial completo.</li>
+          <li><strong>Pipelines (Tablero de Tarjetas):</strong> Es un tablero con columnas (etapas de venta: <em>Nuevo prospecto, En asesoría, Seguimiento 24h, Cita confirmada, Venta ganada</em>). Puedes arrastrar las tarjetas con el mouse de una columna a otra a medida que avanzas con el cliente.</li>
+        </ul>
+
+        <h4>4. Difusiones Masivas (Broadcasts)</h4>
+        <p>Permite enviar promociones o noticias a cientos de clientes a la vez:</p>
+        <ul>
+          <li>Haz clic en <strong>+ Nueva Difusión</strong>.</li>
+          <li>Selecciona una <strong>plantilla aprobada por Meta</strong> (Meta no permite enviar mensajes promocionales fríos sin plantilla aprobada).</li>
+          <li>Elige a qué grupo de contactos enviarlo (por ejemplo, a todos los que tengan la etiqueta <em>#bogota</em>).</li>
+          <li>Haz clic en Enviar. El sistema dosificará los envíos para evitar bloqueos de WhatsApp.</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h3>7.3. Monitor Visual de Nodos IA (n8n.animallium.pet/dashboard)</h3>
+        <p>
+          Si tienes permisos de administrador, puedes ingresar a <code>https://n8n.animallium.pet/dashboard</code> para ver el cerebro de la inteligencia artificial funcionando en vivo:
+        </p>
+        <ul>
+          <li><strong>Indicadores en la cabecera:</strong> Muestra el número de <em>Sesiones Activas</em>, <em>Intervenciones Registradas</em> (mensajes procesados por IA), <em>Leads Completos / Phygital</em> (clientes con perfil completo) y <em>Tareas Programadas en APScheduler</em>.</li>
+          <li><strong>Lienzo Visual de Nodos:</strong> Puedes hacer clic sobre cualquier nodo:
+            <ul>
+              <li><strong>Triggers (Disparadores):</strong> Representa las entradas de Web Chat y Webhook de WhatsApp.</li>
+              <li><strong>Guarda (Espera 10s & Humano):</strong> Muestra la pausa de seguridad para dar prioridad al asesor humano.</li>
+              <li><strong>Enrutamiento (Router Inteligente Gemini):</strong> Muestra cómo clasifica los mensajes y el archivo exacto donde vive la lógica (<code>app/services/ai_orchestrator.py</code>).</li>
+              <li><strong>Especialistas:</strong> Nodos de Ani, Sofi y Triaje Médico con sus respectivas herramientas de búsqueda.</li>
+            </ul>
+          </li>
+          <li><strong>Panel de Inspección Lateral:</strong> Al hacer clic en cualquier nodo, se despliega a la derecha una ficha que explica qué hace, qué entrada recibe, qué salida genera y qué archivo de código lo controla.</li>
+        </ul>
+      </div>
+
+      <div class="card card-warning">
+        <h3>7.4. ¿Qué hacer si algo sale mal? (Guía Rápida para el Asesor)</h3>
+        <ul>
+          <li><strong>Si la IA dice algo incorrecto al cliente:</strong> Haz clic inmediatamente en <strong>[Tomar el control]</strong> en la parte superior del chat. Escribe un mensaje aclaratorio al cliente pidiéndole disculpas y continúa la atención como humano.</li>
+          <li><strong>Si un mensaje no se envía en WhatsApp:</strong> Revisa el estado del mensaje. Si aparece un icono rojo de alerta, el cliente puede tener su número bloqueado o suspendido, o la plantilla no fue aceptada por Meta.</li>
+          <li><strong>Si el sistema parece no responder:</strong> Verifica tu conexión a internet y refresca la página con <code>F5</code>. Si el problema persiste, contacta al soporte técnico informando el número del cliente afectado.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- CAPÍTULO 8: AUTOMATIZACIONES Y AGENTES -->
+    <section id="capitulo-8" class="doc-section">
+      <h2>
+        <span>Capítulo 8. Automatizaciones y Agentes de IA</span>
+        <span class="badge badge-confirmed">ARQUITECTURA DUAL</span>
+      </h2>
+
+      <div class="card">
+        <h3>8.1. Diferencia entre las Automatizaciones de WACRM y Animallium AI Core</h3>
+        <p>
+          El ecosistema cuenta con dos capas complementarias de automatización que no deben confundirse:
+        </p>
+        <div class="grid-2">
+          <div class="card card-blue">
+            <h4>Capa 1: Automatizaciones Nativas de WACRM</h4>
+            <p><strong>Ubicación:</strong> Menús <em>Automatizaciones</em> y <em>Flujos (Beta)</em> en el CRM.</p>
+            <p><strong>Tecnología:</strong> Motor interno de TypeScript en <code>src/lib/automations/engine.ts</code> y <code>src/lib/flows/engine.ts</code> sobre Supabase.</p>
+            <p><strong>Casos de Uso:</strong></p>
+            <ul>
+              <li>Etiquetado automático de contactos cuando escriben por primera vez.</li>
+              <li>Envío de mensajes de bienvenida con botones interactivos cuando la IA está apagada.</li>
+              <li>Árboles de decisión rígidos tipo IVR (<em>"Presiona 1 para ventas, 2 para soporte"</em>).</li>
+            </ul>
+          </div>
+
+          <div class="card card-highlight">
+            <h4>Capa 2: Orquestador Inteligente (AI Core Hub)</h4>
+            <p><strong>Ubicación:</strong> Servidor FastAPI en Python (reemplazo de N8N).</p>
+            <p><strong>Tecnología:</strong> Python 3.13, Google GenAI SDK, AsyncPG, APScheduler en PostgreSQL.</p>
+            <p><strong>Casos de Uso:</strong></p>
+            <ul>
+              <li>Comprensión del lenguaje natural libre y conversacional.</li>
+              <li>Recomendación consultiva de productos mediante Function Calling en WooCommerce.</li>
+              <li>Agendamiento veterinario geolocalizado en clínicas aliadas.</li>
+              <li>Recuperación automatizada de carritos tras 24 horas y seguimiento phygital.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>8.2. Motor de Tareas en Segundo Plano (APScheduler en PostgreSQL)</h3>
+        <p>
+          Las automatizaciones que requieren retrasos en el tiempo (como esperar 30 minutos o 24 horas) <strong>no se ejecutan con temporizadores en memoria (sleep)</strong>, ya que un reinicio del servidor destruiría el proceso. En su lugar, se gestionan mediante <strong>APScheduler con SQLAlchemyJobStore</strong> conectado a PostgreSQL:
+        </p>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Job ID</th>
+                <th>Tiempo de Disparo</th>
+                <th>Función de Ejecución</th>
+                <th>Acción Realizada</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>cazador_[ID_PHYGITAL]</code></td>
+                <td>30 minutos post-escaneo de QR</td>
+                <td><code>cazador_phygital.run_cazador_job</code></td>
+                <td>Genera mensaje persuasivo con Sofi, consulta el teléfono del tutor en la base de datos, envía WhatsApp y reporta a Telegram.</td>
+              </tr>
+              <tr>
+                <td><code>recovery_[CONVERSATION_ID]</code></td>
+                <td>24 horas tras el último mensaje</td>
+                <td><code>recovery.run_abandoned_recovery_job</code></td>
+                <td>Verifica si el cliente respondió; si no, mueve el deal en Supabase a 'Seguimiento 24h', redacta un mensaje de rescate con Gemini y lo despacha.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- CAPÍTULO 9: IDENTIFICACIÓN DE PROBLEMAS, RIESGOS Y OPORTUNIDADES -->
+    <section id="capitulo-9" class="doc-section">
+      <h2>
+        <span>Capítulo 9. Auditoría Técnica: Problemas, Riesgos y Oportunidades</span>
+        <span class="badge badge-critical">AUDITORÍA ÉLITE</span>
+      </h2>
+
+      <div class="card card-highlight">
+        <p>
+          Durante la ingeniería inversa exhaustiva del código fuente en <code>d:\ESCRITORIO\wacrm</code> y <code>d:\ESCRITORIO\Animallium_Master\animallium-ai-core</code>, se han identificado hallazgos clasificados según su criticidad operativa:
+        </p>
+      </div>
+
+      <!-- TABLA DE HALLAZGOS Y AUDITORÍA -->
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Hallazgo Técnico</th>
+              <th>Componente Afectado</th>
+              <th>Evidencia en Código</th>
+              <th>Consecuencia Operativa</th>
+              <th>Prioridad</th>
+              <th>Recomendación Técnica</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>H-01</strong></td>
+              <td><strong>Punto Único de Fallo en Base de Datos Supabase</strong></td>
+              <td>WACRM / Supabase</td>
+              <td><code>src/app/api/whatsapp/webhook/route.ts:47</code></td>
+              <td>Si Supabase experimenta latencia o caída en la región Cloud, WACRM no puede registrar mensajes ni despachar webhooks a AI Core.</td>
+              <td><span class="badge badge-critical">CRÍTICO</span></td>
+              <td>Implementar cola intermedia local (ej. Redis / RabbitMQ en el VPS) para absorber ráfagas de Meta Webhooks si Supabase no responde en &lt; 2s.</td>
+            </tr>
+            <tr>
+              <td><strong>H-02</strong></td>
+              <td><strong>Hardcoding de UUIDs de Stages de Pipelines</strong></td>
+              <td>Animallium AI Core / <code>recovery.py</code></td>
+              <td><code>app/services/recovery.py:13-15</code></td>
+              <td>Si un administrador elimina o renombra los stages o pipelines en WACRM, los UUIDs quedan huérfanos y la actualización de deals falla silenciosamente.</td>
+              <td><span class="badge badge-high">ALTO</span></td>
+              <td>Migrar los UUIDs fijos a variables de entorno en <code>.env</code> o resolver dinámicamente el stage mediante consulta por slug/nombre.</td>
+            </tr>
+            <tr>
+              <td><strong>H-03</strong></td>
+              <td><strong>Límite de Tasa (Rate Limiting) en Memoria por Proceso</strong></td>
+              <td>WACRM Public API v1</td>
+              <td><code>src/lib/rate-limit.ts</code></td>
+              <td>El limitador de 120 req/min reside en la memoria de Node.js. Si se despliega con múltiples réplicas (Docker swarm/cluster), el límite no se comparte.</td>
+              <td><span class="badge badge-medium">MEDIO</span></td>
+              <td>Mantener una sola réplica como está en el VPS o enlazar a un almacén compartido Upstash Redis si el tráfico de la API escala.</td>
+            </tr>
+            <tr>
+              <td><strong>H-04</strong></td>
+              <td><strong>Dependencia de API Externa de Generación de QR</strong></td>
+              <td>Animallium AI Core / <code>manual_vida.py</code></td>
+              <td><code>app/services/manual_vida.py:28</code> (<code>api.qrserver.com</code>)</td>
+              <td>Si el servicio público gratuito de QRServer está caído o bloquea la IP del VPS, el manual de vida no puede renderizar el código QR vectorial.</td>
+              <td><span class="badge badge-high">ALTO</span></td>
+              <td>Reemplazar la llamada HTTP externa por una librería nativa de Python en el contenedor (como <code>qrcode</code> o <code>segno</code> en SVG local).</td>
+            </tr>
+            <tr>
+              <td><strong>H-05</strong></td>
+              <td><strong>Token de Cifrado AES-256 Huérfano ante Rotación</strong></td>
+              <td>WACRM / <code>encryption.ts</code></td>
+              <td><code>.env.local.example:20-25</code></td>
+              <td>Si la clave <code>ENCRYPTION_KEY</code> de 64 caracteres se pierde o se regenera en el VPS, todos los tokens de WhatsApp en la base de datos se vuelven ilegibles.</td>
+              <td><span class="badge badge-critical">CRÍTICO</span></td>
+              <td>Almacenar copia de seguridad en frío de <code>ENCRYPTION_KEY</code> y documentar que nunca debe sobreescribirse sin un script de migración previo.</td>
+            </tr>
+            <tr>
+              <td><strong>H-06</strong></td>
+              <td><strong>Modelo de IA Sujeto a Cuotas de Google Gemini</strong></td>
+              <td>AI Core / <code>ai_orchestrator.py</code></td>
+              <td><code>app/clients.py</code> (<code>generate_content_resilient</code>)</td>
+              <td>Si la clave de Google GenAI agota su cuota de peticiones por minuto (RPM/TPM), el asistente devuelve el fallback de saturación temporal.</td>
+              <td><span class="badge badge-medium">MEDIO</span></td>
+              <td>La función resiliente ya cuenta con fallback de modelo, pero se recomienda habilitar facturación por consumo en Google Cloud para evitar límites tier-free.</td>
+            </tr>
+            <tr>
+              <td><strong>H-07</strong></td>
+              <td><strong>Sincronización Bloqueante en Hilo de GSpread</strong></td>
+              <td>AI Core / <code>sync_external.py</code></td>
+              <td><code>app/services/sync_external.py:140</code></td>
+              <td>Aunque corre con <code>asyncio.to_thread</code>, si la API de Google Sheets se satura o demora &gt; 10s, puede acumular hilos de trabajo en el pool.</td>
+              <td><span class="badge badge-low">BAJO</span></td>
+              <td>Implementar timeout explícito de 5s en la conexión con GSpread y descartar reintentos si la cola supera 20 operaciones en espera.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- CAPÍTULO 10: GUÍA RÁPIDA PARA NUEVOS AGENTES -->
+    <section id="capitulo-10" class="doc-section">
+      <h2>
+        <span>Capítulo 10. Guía Rápida para Nuevos Agentes de Inteligencia Artificial</span>
+        <span class="badge badge-confirmed">DIRECTRICES TÉCNICAS</span>
+      </h2>
+
+      <div class="card card-highlight">
+        <h3>10.1. Protocolo Operativo para Agentes de Código</h3>
+        <p>
+          Cualquier agente de IA (Antigravity, Claude Code, Cursor, Copilot o Gemini CLI) que intervenga en este repositorio <strong>DEBE CUMPLIR ESTAS REGLAS OBLIGATORIAS</strong>:
+        </p>
+        <ol>
+          <li><strong>Regla de Simetría VPS & Local:</strong> El código reside localmente en <code>d:\ESCRITORIO\wacrm</code> (Next.js) y <code>d:\ESCRITORIO\Animallium_Master\animallium-ai-core</code> (Python), pero corre en producción en el VPS (IP: <code>62.72.24.151</code>). Modificaciones en archivos locales NO surten efecto en el VPS hasta que se sincronizan vía SSH/SFTP y se reconstruye el contenedor Docker correspondiente (<code>docker compose build && docker compose up -d</code>).</li>
+          <li><strong>Prohibido Tocar el Token de Cifrado (<code>ENCRYPTION_KEY</code>):</strong> En <code>.env.local</code> jamás debe alterarse o regenerarse este valor. Hacerlo corrompe la sesión de WhatsApp Cloud API de todos los clientes.</li>
+          <li><strong>Respetar la Guarda de 10 Segundos:</strong> La lógica en <code>app/main.py:_process_wacrm_background</code> que espera 10 segundos y verifica <code>wacrm.is_ai_paused()</code> es un requisito de negocio innegociable. No debe ser eliminada ni reducida a menos de 5 segundos.</li>
+          <li><strong>No Romper la Firma de Webhooks:</strong> Las rutas <code>/api/whatsapp/webhook</code> en WACRM y <code>/webhook/wacrm-events</code> en AI Core exigen verificación criptográfica (HMAC-SHA256). No desactives las verificaciones de firma sin autorización explícita.</li>
+          <li><strong>Next.js 16 Breaking Changes:</strong> El proyecto corre Next.js 16 con React 19. Parámetros de rutas asíncronos (<code>params</code> y <code>searchParams</code>) deben resolverse mediante <code>await</code> según las nuevas directrices del framework.</li>
+          <li><strong>Conservar los Endpoints Compatibles con N8N:</strong> El microservicio Python mantiene las rutas históricas de N8N (<code>/webhook/chat-main</code>, <code>/webhook/wacrm-events</code>, <code>/webhook/qr_escaneado</code>, etc.) porque están grabadas en los plugins de WordPress y en las configuraciones de Meta. Modificar estas URLs rompería los webhooks existentes.</li>
+        </ol>
+      </div>
+
+      <div class="card">
+        <h3>10.2. Dónde Encontrar Cada Elemento en el Código Fuente</h3>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Si necesitas modificar o inspeccionar...</th>
+                <th>Archivo y Ruta Exacta</th>
+                <th>Líneas / Función de Interés</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>El prompt o personalidad de Ani (Productos)</td>
+                <td><code>animallium-ai-core/app/services/ai_orchestrator.py</code></td>
+                <td>Líneas 232-248 (<code>_build_agent_system_prompt</code>)</td>
+              </tr>
+              <tr>
+                <td>El prompt o lógica de agendamiento de Sofi (Servicios)</td>
+                <td><code>animallium-ai-core/app/services/ai_orchestrator.py</code></td>
+                <td>Líneas 250-265</td>
+              </tr>
+              <tr>
+                <td>Las palabras clave del enrutador o reglas de triaje</td>
+                <td><code>animallium-ai-core/app/services/ai_orchestrator.py</code></td>
+                <td>Líneas 148-222 (<code>_decide_route</code>)</td>
+              </tr>
+              <tr>
+                <td>El tiempo de la guarda humana (10 segundos)</td>
+                <td><code>animallium-ai-core/app/config.py</code> y <code>main.py</code></td>
+                <td>Variable <code>wacrm_human_wait_seconds</code></td>
+              </tr>
+              <tr>
+                <td>La plantilla HTML del Pasaporte Phygital y Manual de Vida</td>
+                <td><code>animallium-ai-core/app/services/manual_vida.py</code></td>
+                <td>Líneas 41-168 (<code>_render_html</code>)</td>
+              </tr>
+              <tr>
+                <td>El tiempo o mensaje de El Cazador Phygital</td>
+                <td><code>animallium-ai-core/app/services/cazador_phygital.py</code></td>
+                <td>Líneas 44-68 (<code>run_cazador_job</code>)</td>
+              </tr>
+              <tr>
+                <td>La lógica del botón [Tomar el control] en la bandeja</td>
+                <td><code>wacrm/src/app/(dashboard)/inbox/page.tsx</code></td>
+                <td>Actualiza <code>conversations.ai_autoreply_disabled</code></td>
+              </tr>
+              <tr>
+                <td>El envío saliente de mensajes por WhatsApp API v1</td>
+                <td><code>wacrm/src/app/api/v1/messages/route.ts</code></td>
+                <td>Verifica scopes de la API Key y llama a <code>meta-api.ts</code></td>
+              </tr>
+              <tr>
+                <td>La configuración del proxy inverso Caddy en el VPS</td>
+                <td><code>Animallium_VPS/Caddyfile</code></td>
+                <td>Rutas <code>crm.animallium.pet</code> y <code>n8n.animallium.pet</code></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- CAPÍTULO 11: GLOSARIO TÉCNICO -->
+    <section id="capitulo-11" class="doc-section">
+      <h2>
+        <span>Capítulo 11. Glosario de Términos Técnicos</span>
+        <span class="badge badge-confirmed">REFERENCIA</span>
+      </h2>
+
+      <div class="card">
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Término</th>
+                <th>Definición Técnica en el Contexto de Animallium</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Phygital (Físico + Digital)</strong></td>
+                <td>Ecosistema híbrido donde interacciones físicas en clínicas veterinarias (escaneo de códigos QR) se conectan instantáneamente con la base de datos digital y generan seguimiento automatizado por WhatsApp.</td>
+              </tr>
+              <tr>
+                <td><strong>WACRM</strong></td>
+                <td>Plantilla de CRM autohospedable para WhatsApp basada en Next.js 16 y Supabase, que provee bandeja compartida, contactos, pipelines, difusiones y API pública REST.</td>
+              </tr>
+              <tr>
+                <td><strong>Animallium AI Core</strong></td>
+                <td>Microservicio nativo en Python 3.13 (FastAPI) que reemplazó a N8N como el motor de orquestación de agentes de IA, enrutamiento semántico y tareas programadas en segundo plano.</td>
+              </tr>
+              <tr>
+                <td><strong>Guarda de 10 Segundos</strong></td>
+                <td>Pausa deliberada y asíncrona implementada en la recepción de mensajes de WhatsApp que otorga una ventana prioritaria de 10 segundos al asesor humano para responder antes de que intervenga el LLM.</td>
+              </tr>
+              <tr>
+                <td><strong>HMAC-SHA256 (Signature)</strong></td>
+                <td>Código de autenticación de mensajes basado en hash criptográfico utilizado tanto por Meta como por WACRM para verificar que los webhooks recibidos no han sido alterados ni falsificados por terceros.</td>
+              </tr>
+              <tr>
+                <td><strong>Function Calling (Tools de Gemini)</strong></td>
+                <td>Capacidad del modelo de lenguaje de invocar funciones ejecutables del servidor (como consultar el catálogo de WooCommerce o calendarios de citas) y recibir sus datos en tiempo de inferencia.</td>
+              </tr>
+              <tr>
+                <td><strong>RLS (Row Level Security)</strong></td>
+                <td>Seguridad a nivel de fila en PostgreSQL / Supabase que asegura que cada usuario o agente solo pueda acceder a los registros pertenecientes a su propia cuenta o rol asignado.</td>
+              </tr>
+              <tr>
+                <td><strong>APScheduler</strong></td>
+                <td>Librería de Python para programar tareas asíncronas con almacenamiento persistente en base de datos (SQLAlchemyJobStore), evitando la pérdida de temporizadores si el contenedor se reinicia.</td>
+              </tr>
+              <tr>
+                <td><strong>E.164</strong></td>
+                <td>Estándar internacional de numeración telefónica (ej. <code>+573001234567</code>) requerido por la API de Meta para asegurar el enrutamiento correcto de mensajes de WhatsApp.</td>
+              </tr>
+              <tr>
+                <td><strong>Caddy Proxy</strong></td>
+                <td>Servidor web de alto rendimiento y proxy inverso que maneja la terminación SSL/TLS y enruta los subdominios públicos (<code>crm.animallium.pet</code> y <code>n8n.animallium.pet</code>) a sus respectivos contenedores Docker.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- CAPÍTULO 12: CONTROL Y COBERTURA DE LA DOCUMENTACIÓN -->
+    <section id="capitulo-12" class="doc-section">
+      <h2>
+        <span>Capítulo 12. Control, Evidencia y Cobertura de la Auditoría</span>
+        <span class="badge badge-confirmed">AUDITADO</span>
+      </h2>
+
+      <div class="card">
+        <h3>12.1. Inventario de Recursos Inspeccionados</h3>
+        <ul>
+          <li><strong>Código Fuente WACRM:</strong> <code>d:\ESCRITORIO\wacrm</code> (97 paquetes en <code>package.json</code>, Next.js 16.3.8, React 19.2.4, 59 archivos de migración SQL en <code>supabase/migrations</code>).</li>
+          <li><strong>Código Fuente Animallium AI Core:</strong> <code>d:\ESCRITORIO\Animallium_Master\animallium-ai-core</code> (FastAPI, <code>ai_orchestrator.py</code>, <code>cazador_phygital.py</code>, <code>manual_vida.py</code>, <code>recovery.py</code>, <code>wacrm.py</code>, <code>sync_external.py</code>, <code>dashboard.py</code>).</li>
+          <li><strong>Configuración del VPS en Hostinger:</strong> <code>d:\ESCRITORIO\Animallium_Master\Animallium_VPS</code> (Scripts de despliegue paramiko, configuración de Caddyfile, contenedores Docker <code>wacrm-app-1</code>, <code>animallium-ai-core</code>, <code>postgres</code>).</li>
+          <li><strong>Esquema de Datos Supabase:</strong> Archivo <code>d:\ESCRITORIO\wacrm\TABLAS_SUPABASE_CRM.txt</code> (315 KB de migraciones completas).</li>
+          <li><strong>Capturas de Pantalla Operativas:</strong> Panel del CRM en <code>crm.animallium.pet</code> y Lienzo de Nodos en <code>n8n.animallium.pet/dashboard</code>.</li>
+        </ul>
+
+        <h3>12.2. Sistema de Evidencia Empleado</h3>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Nivel de Evidencia</th>
+                <th>Definición y Criterio</th>
+                <th>Porcentaje de Cobertura</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="badge badge-confirmed">CONFIRMADO</span></td>
+                <td>Respaldado directamente por líneas de código comprobadas, archivos de configuración o pruebas de conexión HTTP activas en el repositorio.</td>
+                <td><strong>92%</strong> de los componentes</td>
+              </tr>
+              <tr>
+                <td><span class="badge badge-inferred">INFERIDO</span></td>
+                <td>Deducido lógicamente a partir de la arquitectura y variables de entorno, pero sin ejecución local en vivo durante esta auditoría.</td>
+                <td><strong>6%</strong> de los componentes</td>
+              </tr>
+              <tr>
+                <td><span class="badge badge-unverified">NO VERIFICADO</span></td>
+                <td>Servicios de terceros que requieren credenciales activas del cliente en producción (ej. panel de Google Sheets o cuenta bancaria/pasarela).</td>
+                <td><strong>2%</strong> de los componentes</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECCIÓN CRÍTICA: LEE ESTO ANTES DE TRABAJAR CON EL SISTEMA -->
+    <section id="lee-esto-primero" class="doc-section">
+      <div class="hero-cover" style="border-color: rgba(234, 88, 12, 0.4); background: linear-gradient(135deg, rgba(234, 88, 12, 0.15) 0%, rgba(15, 23, 42, 0.8) 100%);">
+        <div class="hero-tag" style="background: rgba(234, 88, 12, 0.25); color: #fed7aa;">MANUAL DE ENTRADA OBLIGATORIO PARA CUALQUIER AGENTE DE IA</div>
+        <h2 style="border: none; margin-top: 0; padding: 0;">LEE ESTO ANTES DE TRABAJAR CON EL SISTEMA</h2>
+        <p style="font-size: 16px; color: #cbd5e1; margin-bottom: 20px;">
+          Esta sección es el punto de entrada definitivo para desarrolladores y modelos de inteligencia artificial. Resume la arquitectura, los componentes no negociables y el mapa de consulta para evitar análisis repetitivos.
+        </p>
+
+        <div class="card card-highlight">
+          <ol style="margin-bottom: 0;">
+            <li><strong>El Sistema son Dos Aplicaciones Principales:</strong> 
+              1) <strong>WACRM</strong> (Frontend/Backend en Next.js 16 + Supabase en <code>crm.animallium.pet</code>). 
+              2) <strong>Animallium AI Core</strong> (Microservicio en FastAPI/Python que reemplazó a N8N en <code>n8n.animallium.pet</code>).
+            </li>
+            <li><strong>La Comunicación es por Webhooks Firmados:</strong> Meta envía mensajes a WACRM; WACRM los guarda en Supabase y dispara un webhook a AI Core; AI Core procesa el turno con Gemini y responde enviando un POST a <code>/api/v1/messages</code> de WACRM.</li>
+            <li><strong>La Prioridad Humana es Sagrada:</strong> AI Core siempre espera 10 segundos antes de hablar. Si un humano responde o presiona <strong>[Tomar el control]</strong>, la IA aborta. No alteres esta lógica.</li>
+            <li><strong>Mantenimiento en VPS:</strong> Ambos servicios corren en Docker dentro del VPS en <code>62.72.24.151</code> tras el proxy Caddy. Todo cambio local debe sincronizarse y recompilarse en el servidor.</li>
+          </ol>
+        </div>
+      </div>
+
+      <!-- MAPA DE CONSULTA RÁPIDA -->
+      <div id="mapa-consulta-rapida" class="card card-emerald">
+        <h3>MAPA DE CONSULTA RÁPIDA PARA AGENTES Y DESARROLLADORES</h3>
+        <p>Utiliza esta tabla para saber exactamente a dónde dirigirte según la tarea que debas realizar:</p>
+        
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Necesidad u Objetivo</th>
+                <th>Qué Debes Consultar</th>
+                <th>Ubicación o Archivo Exacto</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Comprender qué es el sistema y su negocio</td>
+                <td>Visión General y Propósito</td>
+                <td>Capítulo 1 de este documento</td>
+              </tr>
+              <tr>
+                <td>Entender la topología de red y servidores</td>
+                <td>Diagrama de Arquitectura y Tecnologías</td>
+                <td>Capítulo 2 de este documento</td>
+              </tr>
+              <tr>
+                <td>Ubicar un archivo en el código fuente</td>
+                <td>Mapa de Carpetas y Módulos</td>
+                <td>Capítulo 3 de este documento</td>
+              </tr>
+              <tr>
+                <td>Modificar los prompts o reglas de los agentes (Ani, Sofi, Triage)</td>
+                <td>Orquestador de IA y Function Calling</td>
+                <td><code>animallium-ai-core/app/services/ai_orchestrator.py</code></td>
+              </tr>
+              <tr>
+                <td>Ajustar la guarda humana de 10 segundos</td>
+                <td>Lógica de Despacho Asíncrono</td>
+                <td><code>animallium-ai-core/app/main.py</code> (Línea 162)</td>
+              </tr>
+              <tr>
+                <td>Inspeccionar o cambiar el esquema de la base de datos</td>
+                <td>Migraciones SQL de Supabase</td>
+                <td><code>wacrm/supabase/migrations/</code> (001 a 059)</td>
+              </tr>
+              <tr>
+                <td>Revisar el envío o recepción de mensajes de WhatsApp</td>
+                <td>Webhook de Meta y API v1 de WACRM</td>
+                <td><code>wacrm/src/app/api/whatsapp/webhook/route.ts</code> y <code>src/app/api/v1/</code></td>
+              </tr>
+              <tr>
+                <td>Modificar las tareas programadas (Cazador Phygital / Recovery 24h)</td>
+                <td>Trabajos en APScheduler</td>
+                <td><code>cazador_phygital.py</code> y <code>recovery.py</code></td>
+              </tr>
+              <tr>
+                <td>Personalizar la plantilla del Pasaporte Phygital / Manual de Vida</td>
+                <td>Generador HTML de Manual de Vida</td>
+                <td><code>animallium-ai-core/app/services/manual_vida.py</code></td>
+              </tr>
+              <tr>
+                <td>Entender la operación del usuario sin programar</td>
+                <td>Manual de Usuario y Pantallas</td>
+                <td>Capítulo 7 de este documento</td>
+              </tr>
+              <tr>
+                <td>Revisar vulnerabilidades, riesgos y prioridades técnicas</td>
+                <td>Auditoría y Hallazgos</td>
+                <td>Capítulo 9 de este documento</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer style="margin-top: 60px; padding-top: 30px; border-top: 1px solid var(--border-subtle); text-align: center; color: var(--text-dim); font-size: 13px;">
+      <p><strong>Animallium OS — Base de Conocimiento Técnica y Operativa</strong></p>
+      <p>Generado oficialmente tras auditoría de ingeniería inversa • WACRM v0.8.0 & Animallium AI Core v2.0.0 • Noviembre 2026</p>
+    </footer>
+  </main>
+</div>
+
+<!-- JAVASCRIPT INTERACTIVO -->
+<script>
+  // Buscador dinámico de secciones y contenido
+  function filterDocs() {
+    const input = document.getElementById('docSearch').value.toLowerCase();
+    const sections = document.querySelectorAll('.doc-section');
+    const navItems = document.querySelectorAll('.nav-item');
+
+    sections.forEach(sec => {
+      const text = sec.innerText.toLowerCase();
+      if (text.includes(input)) {
+        sec.style.display = 'block';
+      } else {
+        sec.style.display = 'none';
+      }
+    });
+
+    navItems.forEach(item => {
+      const text = item.innerText.toLowerCase();
+      if (text.includes(input)) {
+        item.style.display = 'block';
+      } else {
+        item.style.display = input ? 'none' : 'block';
+      }
+    });
+  }
+
+  // Resaltado de sección activa al hacer scroll
+  window.addEventListener('scroll', () => {
+    const sections = document.querySelectorAll('.doc-section, .hero-cover');
+    const scrollPos = window.scrollY + 100;
+
+    sections.forEach(sec => {
+      if (sec.offsetTop <= scrollPos && (sec.offsetTop + sec.offsetHeight) > scrollPos) {
+        const id = sec.getAttribute('id');
+        document.querySelectorAll('.nav-item').forEach(item => {
+          item.classList.remove('active');
+          const link = item.querySelector('a');
+          if (link && link.getAttribute('href') === '#' + id) {
+            item.classList.add('active');
+          }
+        });
+      }
+    });
+  });
+</script>
+</body>
+</html>

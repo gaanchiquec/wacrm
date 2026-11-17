@@ -1,0 +1,56 @@
+'use client'
+
+import { ExternalLink, RefreshCw } from 'lucide-react'
+import { useState } from 'react'
+
+export default function NodosIaPage() {
+  const [key, setKey] = useState(0)
+
+  return (
+    <div className="flex flex-col h-[calc(100vh-4rem)] w-full overflow-hidden bg-background">
+      <div className="flex items-center justify-between px-6 py-2.5 border-b border-border bg-card/60 backdrop-blur-sm">
+        <div className="flex items-center gap-3">
+          <span className="text-xl">🧠</span>
+          <div>
+            <h1 className="text-sm font-bold text-foreground">
+              Monitor Visual de Nodos IA (Animallium AI Core)
+            </h1>
+            <p className="text-xs text-muted-foreground">
+              Canvas interactivo con Ani (Productos), Sofi (Servicios), Triage Médico y Director Alianzas B2B
+            </p>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setKey(prev => prev + 1)}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-border bg-muted/50 hover:bg-muted text-xs font-medium text-foreground transition-colors"
+            title="Recargar vista"
+          >
+            <RefreshCw className="w-3.5 h-3.5" />
+            <span>Recargar</span>
+          </button>
+
+          <a
+            href="https://n8n.animallium.pet/dashboard"
+            target="_blank"
+            rel="noopener"
+            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-amber-600 hover:bg-amber-700 text-xs font-bold text-white shadow-sm transition-colors"
+          >
+            <span>Abrir en Pestaña Nueva</span>
+            <ExternalLink className="w-3.5 h-3.5" />
+          </a>
+        </div>
+      </div>
+
+      <div className="flex-1 w-full h-full relative">
+        <iframe
+          key={key}
+          src={key === 0 ? 'https://n8n.animallium.pet/dashboard' : `https://n8n.animallium.pet/dashboard?r=${key}`}
+          className="w-full h-full border-0"
+          title="Monitor Visual de Nodos IA"
+        />
+      </div>
+    </div>
+  )
+}
