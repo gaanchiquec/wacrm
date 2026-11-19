@@ -32,7 +32,7 @@ export default function CentroMandoPage() {
           </button>
 
           <a
-            href="https://n8n.animallium.pet/centro-mando"
+            href="/vista/centro-mando"
             target="_blank"
             rel="noopener"
             className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-xs font-bold text-white shadow-sm transition-colors"
@@ -46,7 +46,7 @@ export default function CentroMandoPage() {
       <div className="flex-1 w-full h-full relative">
         <iframe
           key={key}
-          src={key === 0 ? 'https://n8n.animallium.pet/centro-mando' : `https://n8n.animallium.pet/centro-mando?r=${key}`}
+          src={key === 0 ? '/api/animallium-proxy/centro-mando' : `/api/animallium-proxy/centro-mando?r=${key}`}
           className="w-full h-full border-0"
           title="Centro de Mando Animallium"
         />

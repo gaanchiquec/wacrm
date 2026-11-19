@@ -152,11 +152,22 @@ const nextConfig: NextConfig = {
         ],
       },
       {
-        // Security headers on every response, including /_next/static
-        // assets (nosniff matters there) and /api/* (HSTS + referrer-
-        // policy don't hurt).
-        source: "/:path*",
+        // Security headers on every response except the same-origin AI Core
+        // proxy routes embedded inside /centro-mando and /vista/*.
+        source: "/:path((?!api/animallium-proxy).*)",
         headers: [...SECURITY_HEADERS],
+      },
+      {
+        source: "/api/animallium-proxy/:path*",
+        headers: [
+          {
+            key: "Strict-Transport-Security",
+            value: "max-age=63072000; includeSubDomains; preload",
+          },
+          { key: "X-Content-Type-Options", value: "nosniff" },
+          { key: "X-Frame-Options", value: "SAMEORIGIN" },
+          { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+        ],
       },
     ];
   },

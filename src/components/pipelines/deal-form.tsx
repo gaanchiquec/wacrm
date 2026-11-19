@@ -46,6 +46,7 @@ interface DealFormProps {
   pipelineId: string;
   stages: PipelineStage[];
   defaultStageId?: string;
+  isClientPipeline?: boolean;
   onSaved: () => void;
 }
 
@@ -56,6 +57,7 @@ export function DealForm({
   pipelineId,
   stages,
   defaultStageId,
+  isClientPipeline,
   onSaved,
 }: DealFormProps) {
   const t = useTranslations("Pipelines.form");
@@ -285,7 +287,9 @@ export function DealForm({
         <div className="flex h-full flex-col">
           <SheetHeader className="border-b border-border/50 p-4">
             <SheetTitle className="text-popover-foreground">
-              {deal ? t("editDeal") : t("newDeal")}
+              {deal
+                ? (isClientPipeline ? t("editClient") : t("editDeal"))
+                : (isClientPipeline ? t("newClient") : t("newDeal"))}
             </SheetTitle>
           </SheetHeader>
 
@@ -484,7 +488,11 @@ export function DealForm({
                 disabled={saving || !title.trim() || !contactId || !stageId}
                 className="flex-1 bg-primary text-primary-foreground hover:bg-primary/90"
               >
-                {saving ? t("saving") : deal ? t("saveChanges") : t("createDeal")}
+                {saving
+                  ? t("saving")
+                  : deal
+                  ? t("saveChanges")
+                  : (isClientPipeline ? t("createClient") : t("createDeal"))}
               </Button>
             </div>
 

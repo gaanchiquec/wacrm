@@ -201,7 +201,12 @@ export interface Conversation {
 // Notifications (migration 027)
 // ============================================================
 
-export type NotificationType = 'conversation_assigned';
+export type NotificationType =
+  | 'conversation_assigned'
+  | 'new_conversation'
+  | 'new_message'
+  | 'deal_created'
+  | 'ai_handoff';
 
 export interface Notification {
   id: string;
@@ -211,6 +216,7 @@ export interface Notification {
   type: NotificationType;
   conversation_id?: string;
   contact_id?: string;
+  deal_id?: string;
   /** Who triggered it. Null when an automation/system assigned it. */
   actor_user_id?: string;
   title: string;
@@ -375,6 +381,8 @@ export interface Pipeline {
   user_id: string;
   name: string;
   created_at: string;
+  account_id?: string;
+  entity_type?: 'deal' | 'client';
 }
 
 export interface PipelineStage {

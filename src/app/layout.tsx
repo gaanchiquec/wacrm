@@ -28,10 +28,12 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
+const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME?.trim() || "wacrm";
+
 const metadata: Metadata = {
   title: {
-    default: "wacrm",
-    template: "%s — wacrm",
+    default: APP_NAME,
+    template: `%s — ${APP_NAME}`,
   },
   robots: {
     index: false,

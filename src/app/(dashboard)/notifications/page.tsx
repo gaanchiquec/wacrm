@@ -6,17 +6,29 @@ import { createClient } from "@/lib/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 import { notificationsAccountFilter } from "@/lib/notifications/unread-count";
 import type { Notification } from "@/types";
-import { Bell, CheckCheck, Loader2, UserPlus } from "lucide-react";
+import {
+  Bell,
+  CheckCheck,
+  Loader2,
+  Trash2,
+  UserPlus,
+  MessageSquare,
+  MessageSquarePlus,
+  DollarSign,
+  Bot
+} from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { useTranslations } from "next-intl";
 
-// Icon per notification type. Only one type exists today
-// (conversation_assigned) but this keeps future types a one-line add.
 const TYPE_ICON: Record<Notification["type"], typeof Bell> = {
   conversation_assigned: UserPlus,
+  new_conversation: MessageSquarePlus,
+  new_message: MessageSquare,
+  deal_created: DollarSign,
+  ai_handoff: Bot,
 };
 
 export default function NotificationsPage() {
@@ -28,6 +40,8 @@ export default function NotificationsPage() {
   );
   const [error, setError] = useState<string | null>(null);
   const [markingAll, setMarkingAll] = useState(false);
+  const [clearingRead, setClearingRead] = useState(false);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     if (!accountId) return;
@@ -125,12 +139,15 @@ export default function NotificationsPage() {
       if (!n.read_at) markRead(n.id);
       if (n.conversation_id) {
         router.push(`/inbox?c=${n.conversation_id}`);
+      } else if (n.deal_id) {
+        router.push(`/pipelines`);
       }
     },
     [markRead, router],
   );
 
   const unreadIds = notifications?.filter((n) => !n.read_at).map((n) => n.id) ?? [];
+  const readIds = notifications?.filter((n) => Boolean(n.read_at)).map((n) => n.id) ?? [];
 
   const markAllRead = useCallback(async () => {
     if (unreadIds.length === 0 || !accountId) return;
@@ -151,6 +168,45 @@ export default function NotificationsPage() {
       load();
     }
   }, [unreadIds.length, accountId, load, t]);
+
+  const clearAllRead = useCallback(async () => {
+    if (readIds.length === 0 || clearingRead) return;
+    setClearingRead(true);
+    const prevSnapshot = notifications;
+    setNotifications((prev) => prev?.filter((n) => !n.read_at) ?? prev);
+    try {
+      const res = await fetch("/api/notifications", { method: "DELETE" });
+      if (!res.ok) throw new Error("delete_failed");
+      toast.success(t("clearReadSuccess"));
+    } catch {
+      setNotifications(prevSnapshot);
+      toast.error(t("clearReadFailed"));
+    } finally {
+      setClearingRead(false);
+    }
+  }, [readIds.length, clearingRead, notifications, t]);
+
+  const deleteSingleRead = useCallback(
+    async (id: string) => {
+      if (deletingId) return;
+      setDeletingId(id);
+      const prevSnapshot = notifications;
+      setNotifications((prev) => prev?.filter((n) => n.id !== id) ?? prev);
+      try {
+        const res = await fetch(
+          `/api/notifications?id=${encodeURIComponent(id)}`,
+          { method: "DELETE" },
+        );
+        if (!res.ok) throw new Error("delete_failed");
+      } catch {
+        setNotifications(prevSnapshot);
+        toast.error(t("clearReadFailed"));
+      } finally {
+        setDeletingId(null);
+      }
+    },
+    [deletingId, notifications, t],
+  );
 
   if (error) {
     return (
@@ -173,26 +229,41 @@ export default function NotificationsPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h1 className="text-2xl font-bold text-foreground">{t("title")}</h1>
           <p className="mt-1 text-sm text-muted-foreground">
             {t("description")}
           </p>
         </div>
-        <Button
-          variant="outline"
-          size="sm"
-          disabled={unreadIds.length === 0 || markingAll}
-          onClick={markAllRead}
-        >
-          {markingAll ? (
-            <Loader2 className="h-4 w-4 animate-spin" />
-          ) : (
-            <CheckCheck className="h-4 w-4" />
-          )}
-          {t("markAllRead")}
-        </Button>
+        <div className="flex flex-wrap items-center gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            disabled={unreadIds.length === 0 || markingAll}
+            onClick={markAllRead}
+          >
+            {markingAll ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <CheckCheck className="h-4 w-4" />
+            )}
+            {t("markAllRead")}
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            disabled={readIds.length === 0 || clearingRead}
+            onClick={clearAllRead}
+          >
+            {clearingRead ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <Trash2 className="h-4 w-4" />
+            )}
+            {t("clearRead")}
+          </Button>
+        </div>
       </div>
 
       {notifications.length === 0 ? (
@@ -210,63 +281,93 @@ export default function NotificationsPage() {
       ) : (
         <ul className="space-y-2">
           {notifications.map((n) => {
-            const Icon = TYPE_ICON[n.type] ?? Bell;
+            let Icon = TYPE_ICON[n.type] ?? Bell;
+            const lowerTitle = (n.title || "").toLowerCase();
+            if (n.type === "new_conversation" || lowerTitle.includes("conversación")) {
+              Icon = MessageSquarePlus;
+            } else if (n.type === "new_message" || lowerTitle.includes("mensaje")) {
+              Icon = MessageSquare;
+            } else if (n.type === "deal_created" || n.deal_id || lowerTitle.includes("negocio") || lowerTitle.includes("cliente")) {
+              Icon = DollarSign;
+            } else if (n.type === "ai_handoff") {
+              Icon = Bot;
+            }
             const isUnread = !n.read_at;
             return (
-              <li key={n.id}>
-                <button
-                  type="button"
-                  onClick={() => handleClick(n)}
+              <li key={n.id} className="relative">
+                <div
                   className={cn(
-                    "flex w-full items-start gap-3 rounded-xl border p-4 text-left transition-colors",
+                    "flex w-full items-start gap-3 rounded-xl border p-4 transition-colors",
                     isUnread
                       ? "border-primary/30 bg-primary/5 hover:border-primary/50"
                       : "border-border bg-card hover:border-border/70",
                   )}
                 >
-                  <div
-                    className={cn(
-                      "flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg",
-                      isUnread ? "bg-primary/15" : "bg-muted",
-                    )}
-                    aria-hidden
+                  <button
+                    type="button"
+                    onClick={() => handleClick(n)}
+                    className="flex min-w-0 flex-1 items-start gap-3 text-left"
                   >
-                    <Icon
+                    <div
                       className={cn(
-                        "h-5 w-5",
-                        isUnread ? "text-primary" : "text-muted-foreground",
+                        "flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg",
+                        isUnread ? "bg-primary/15" : "bg-muted",
                       )}
-                    />
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-2">
-                      <span
+                      aria-hidden
+                    >
+                      <Icon
                         className={cn(
-                          "truncate text-sm font-semibold",
-                          isUnread ? "text-foreground" : "text-muted-foreground",
+                          "h-5 w-5",
+                          isUnread ? "text-primary" : "text-muted-foreground",
                         )}
-                      >
-                        {n.title}
-                      </span>
-                      {isUnread && (
-                        <span
-                          aria-label={t("unread")}
-                          className="h-2 w-2 flex-shrink-0 rounded-full bg-primary"
-                        />
-                      )}
+                      />
                     </div>
-                    {n.body && (
-                      <p className="mt-0.5 truncate text-xs text-muted-foreground">
-                        {n.body}
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-2">
+                        <span
+                          className={cn(
+                            "truncate text-sm font-semibold",
+                            isUnread ? "text-foreground" : "text-muted-foreground",
+                          )}
+                        >
+                          {n.title}
+                        </span>
+                        {isUnread && (
+                          <span
+                            aria-label={t("unread")}
+                            className="h-2 w-2 flex-shrink-0 rounded-full bg-primary"
+                          />
+                        )}
+                      </div>
+                      {n.body && (
+                        <p className="mt-0.5 truncate text-xs text-muted-foreground">
+                          {n.body}
+                        </p>
+                      )}
+                      <p className="mt-1 text-[11px] text-muted-foreground/70">
+                        {formatDistanceToNow(new Date(n.created_at), {
+                          addSuffix: true,
+                        })}
                       </p>
-                    )}
-                    <p className="mt-1 text-[11px] text-muted-foreground/70">
-                      {formatDistanceToNow(new Date(n.created_at), {
-                        addSuffix: true,
-                      })}
-                    </p>
-                  </div>
-                </button>
+                    </div>
+                  </button>
+                  {!isUnread && (
+                    <button
+                      type="button"
+                      onClick={() => deleteSingleRead(n.id)}
+                      disabled={deletingId === n.id}
+                      aria-label={t("deleteOne")}
+                      title={t("deleteOne")}
+                      className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive"
+                    >
+                      {deletingId === n.id ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <Trash2 className="h-4 w-4" />
+                      )}
+                    </button>
+                  )}
+                </div>
               </li>
             );
           })}

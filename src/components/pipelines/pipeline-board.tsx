@@ -25,6 +25,7 @@ import { useTranslations } from "next-intl";
 interface PipelineBoardProps {
   stages: PipelineStage[];
   deals: Deal[];
+  isClientPipeline?: boolean;
   onDealMoved: (dealId: string, newStageId: string) => void;
   onAddDeal: (stageId: string) => void;
   onEditDeal: (deal: Deal) => void;
@@ -33,6 +34,7 @@ interface PipelineBoardProps {
 export function PipelineBoard({
   stages,
   deals,
+  isClientPipeline,
   onDealMoved,
   onAddDeal,
   onEditDeal,
@@ -117,6 +119,7 @@ export function PipelineBoard({
               deals={stageDeals}
               totalValue={totalValue}
               currency={defaultCurrency}
+              isClientPipeline={isClientPipeline}
               onAddDeal={onAddDeal}
               onEditDeal={onEditDeal}
             />
@@ -191,6 +194,7 @@ function StageColumn({
   deals,
   totalValue,
   currency,
+  isClientPipeline,
   onAddDeal,
   onEditDeal,
 }: {
@@ -198,6 +202,7 @@ function StageColumn({
   deals: Deal[];
   totalValue: number;
   currency: string;
+  isClientPipeline?: boolean;
   onAddDeal: (stageId: string) => void;
   onEditDeal: (deal: Deal) => void;
 }) {
@@ -239,7 +244,7 @@ function StageColumn({
       >
         {deals.length === 0 ? (
           <div className="flex flex-1 items-center justify-center rounded-lg border-2 border-dashed border-border py-10 text-xs text-muted-foreground">
-            {t("dropDealHere")}
+            {isClientPipeline ? t("dropClientHere") : t("dropDealHere")}
           </div>
         ) : (
           deals.map((deal) => (
@@ -260,7 +265,7 @@ function StageColumn({
         className="mt-3 w-full justify-start border border-dashed border-border bg-transparent text-muted-foreground hover:border-border hover:bg-muted hover:text-foreground"
       >
         <Plus className="mr-1 h-3 w-3" />
-        {t("addDeal")}
+        {isClientPipeline ? t("addClient") : t("addDeal")}
       </Button>
     </div>
   );

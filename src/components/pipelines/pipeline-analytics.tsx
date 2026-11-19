@@ -24,6 +24,7 @@ import { useTranslations } from "next-intl";
 interface PipelineAnalyticsProps {
   stages: PipelineStage[];
   deals: Deal[];
+  isClientPipeline?: boolean;
 }
 
 /**
@@ -46,7 +47,11 @@ function computeStageProbability(
   return 0.1 + t * (0.9 - 0.1);
 }
 
-export function PipelineAnalytics({ stages, deals }: PipelineAnalyticsProps) {
+export function PipelineAnalytics({
+  stages,
+  deals,
+  isClientPipeline,
+}: PipelineAnalyticsProps) {
   const t = useTranslations("Pipelines.analytics");
   const { defaultCurrency } = useAuth();
   const sortedStages = useMemo(
@@ -98,9 +103,9 @@ export function PipelineAnalytics({ stages, deals }: PipelineAnalyticsProps) {
       <div className="grid grid-cols-2 gap-3 rounded-xl border border-border bg-card/60 p-4 sm:grid-cols-3 xl:grid-cols-6">
         <Metric
           icon={<BarChart3 className="h-4 w-4 text-muted-foreground" />}
-          label={t("totalDeals")}
+          label={isClientPipeline ? t("totalClients") : t("totalDeals")}
           value={String(stats.totalCount)}
-          tooltip={t("totalDealsTooltip")}
+          tooltip={isClientPipeline ? t("totalClientsTooltip") : t("totalDealsTooltip")}
           t={t}
         />
         <Metric

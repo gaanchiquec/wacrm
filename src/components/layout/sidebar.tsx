@@ -2,8 +2,13 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
+import {
+  BRAND_UPDATED_EVENT,
+  getEnvBrandDefaults,
+  readStoredBrand,
+} from "@/lib/branding";
 import { useAuth } from "@/hooks/use-auth";
 import { useTotalUnread } from "@/hooks/use-total-unread";
 import { useUnreadNotifications } from "@/hooks/use-unread-notifications";
@@ -132,6 +137,29 @@ export function Sidebar({ open = false, onClose }: SidebarProps) {
     !!account?.name &&
     account.name !== profile?.full_name;
 
+  const [storedBrand, setStoredBrand] = useState(() => getEnvBrandDefaults());
+  const [logoError, setLogoError] = useState(false);
+
+  useEffect(() => {
+    const syncBrand = () => {
+      const saved = readStoredBrand();
+      const envDefaults = getEnvBrandDefaults();
+      setStoredBrand({
+        name: saved.name || envDefaults.name,
+        logoUrl: saved.logoUrl || envDefaults.logoUrl,
+      });
+      setLogoError(false);
+    };
+    syncBrand();
+    window.addEventListener(BRAND_UPDATED_EVENT, syncBrand);
+    return () => window.removeEventListener(BRAND_UPDATED_EVENT, syncBrand);
+  }, []);
+
+  const brandName =
+    storedBrand.name ||
+    (showAccountStrip && account?.name ? account.name : t("title"));
+  const brandLogoUrl = storedBrand.logoUrl;
+
   // Close the drawer when route changes — users opened it to navigate,
   // so once they pick a destination the drawer should get out of the way.
   useEffect(() => {
@@ -187,12 +215,21 @@ export function Sidebar({ open = false, onClose }: SidebarProps) {
         {/* Logo row. On mobile we put a close button here; on desktop the
             close button is hidden since the sidebar is always-visible. */}
         <div className="flex h-14 shrink-0 items-center justify-between gap-2 border-b border-border px-4">
-          <Link href="/dashboard" className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-              <MessageSquare className="h-4 w-4" />
-            </div>
-            <span className="text-sm font-semibold text-foreground">
-              {t("title")}
+          <Link href="/dashboard" className="flex min-w-0 items-center gap-2.5">
+            {brandLogoUrl && !logoError ? (
+              <img
+                src={brandLogoUrl}
+                alt={brandName}
+                onError={() => setLogoError(true)}
+                className="h-8 w-8 shrink-0 rounded-lg border border-border/60 bg-white object-contain p-0.5"
+              />
+            ) : (
+              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+                <MessageSquare className="h-4 w-4" />
+              </div>
+            )}
+            <span className="truncate text-sm font-semibold text-foreground" title={brandName}>
+              {brandName}
             </span>
           </Link>
           <button
@@ -267,6 +304,49 @@ export function Sidebar({ open = false, onClose }: SidebarProps) {
               );
             })}
           </ul>
+
+          {process.env.NEXT_PUBLIC_ENABLE_ANIMALLIUM_OS === "true" &&
+            (accountRole === "owner" || accountRole === "admin") && (
+              <>
+                <div className="my-3 border-t border-border" />
+                <div className="flex items-center justify-between px-3 pb-1 pt-1 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                  <span>Animallium OS</span>
+                  <span className="rounded bg-emerald-500/15 px-1.5 py-0.5 font-mono text-[9px] font-bold text-emerald-400">
+                    6 CAPAS
+                  </span>
+                </div>
+                <ul className="flex flex-col gap-1">
+                  <li>
+                    <Link
+                      href="/centro-mando"
+                      className={cn(
+                        "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
+                        pathname.startsWith("/centro-mando")
+                          ? "bg-emerald-500/15 font-bold text-emerald-400"
+                          : "text-muted-foreground hover:bg-muted hover:text-foreground",
+                      )}
+                    >
+                      <span className="text-base">🐾</span>
+                      <span className="flex-1">Centro de Mando (6 Capas)</span>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href="/nodos-ia"
+                      className={cn(
+                        "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
+                        pathname.startsWith("/nodos-ia")
+                          ? "bg-amber-500/15 font-bold text-amber-400"
+                          : "text-muted-foreground hover:bg-muted hover:text-foreground",
+                      )}
+                    >
+                      <span className="text-base">🧠</span>
+                      <span className="flex-1">Monitor Nodos IA</span>
+                    </Link>
+                  </li>
+                </ul>
+              </>
+            )}
 
           <div className="my-4 border-t border-border" />
 

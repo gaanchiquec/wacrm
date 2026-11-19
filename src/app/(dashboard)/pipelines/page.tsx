@@ -299,6 +299,12 @@ export default function PipelinesPage() {
   }
 
   const selectedPipeline = pipelines.find((p) => p.id === selectedPipelineId);
+  const isClientPipeline = Boolean(
+    selectedPipeline?.entity_type === "client" ||
+    selectedPipeline?.name?.toLowerCase().includes("ventas") ||
+    selectedPipeline?.name?.toLowerCase().includes("b2c") ||
+    selectedPipeline?.name?.toLowerCase().includes("cliente")
+  );
 
   if (loading) {
     return (
@@ -388,7 +394,7 @@ export default function PipelinesPage() {
             className="bg-primary text-primary-foreground hover:bg-primary/90"
           >
             <Plus className="mr-1 h-4 w-4" />
-            {t("addDeal")}
+            {isClientPipeline ? t("addClient") : t("addDeal")}
           </GatedButton>
         </div>
       </div>
@@ -415,10 +421,11 @@ export default function PipelinesPage() {
         </div>
       ) : (
         <>
-          <PipelineAnalytics stages={stages} deals={deals} />
+          <PipelineAnalytics stages={stages} deals={deals} isClientPipeline={isClientPipeline} />
           <PipelineBoard
             stages={stages}
             deals={deals}
+            isClientPipeline={isClientPipeline}
             onDealMoved={handleDealMoved}
             onAddDeal={handleAddDeal}
             onEditDeal={handleEditDeal}
@@ -490,6 +497,7 @@ export default function PipelinesPage() {
         pipelineId={selectedPipelineId}
         stages={stages}
         defaultStageId={defaultStageId}
+        isClientPipeline={isClientPipeline}
         onSaved={refreshDeals}
       />
     </div>

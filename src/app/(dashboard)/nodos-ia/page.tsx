@@ -32,7 +32,7 @@ export default function NodosIaPage() {
           </button>
 
           <a
-            href="https://n8n.animallium.pet/dashboard"
+            href="/vista/nodos-ia"
             target="_blank"
             rel="noopener"
             className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-amber-600 hover:bg-amber-700 text-xs font-bold text-white shadow-sm transition-colors"
@@ -46,7 +46,7 @@ export default function NodosIaPage() {
       <div className="flex-1 w-full h-full relative">
         <iframe
           key={key}
-          src={key === 0 ? 'https://n8n.animallium.pet/dashboard' : `https://n8n.animallium.pet/dashboard?r=${key}`}
+          src={key === 0 ? '/api/animallium-proxy/dashboard' : `/api/animallium-proxy/dashboard?r=${key}`}
           className="w-full h-full border-0"
           title="Monitor Visual de Nodos IA"
         />
