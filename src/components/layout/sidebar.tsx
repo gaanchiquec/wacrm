@@ -303,50 +303,24 @@ export function Sidebar({ open = false, onClose }: SidebarProps) {
                 </li>
               );
             })}
+            {process.env.NEXT_PUBLIC_ENABLE_ANIMALLIUM_OS === "true" &&
+              (accountRole === "owner" || accountRole === "admin") && (
+                <li>
+                  <Link
+                    href="/nodos-ia"
+                    className={cn(
+                      "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors lg:py-2",
+                      pathname.startsWith("/nodos-ia")
+                        ? "bg-primary/10 text-primary"
+                        : "text-muted-foreground hover:bg-muted hover:text-foreground",
+                    )}
+                  >
+                    <Bot className="h-4 w-4 text-amber-400" />
+                    <span className="flex-1">Monitor Nodos IA</span>
+                  </Link>
+                </li>
+              )}
           </ul>
-
-          {process.env.NEXT_PUBLIC_ENABLE_ANIMALLIUM_OS === "true" &&
-            (accountRole === "owner" || accountRole === "admin") && (
-              <>
-                <div className="my-3 border-t border-border" />
-                <div className="flex items-center justify-between px-3 pb-1 pt-1 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
-                  <span>Animallium OS</span>
-                  <span className="rounded bg-emerald-500/15 px-1.5 py-0.5 font-mono text-[9px] font-bold text-emerald-400">
-                    6 CAPAS
-                  </span>
-                </div>
-                <ul className="flex flex-col gap-1">
-                  <li>
-                    <Link
-                      href="/centro-mando"
-                      className={cn(
-                        "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
-                        pathname.startsWith("/centro-mando")
-                          ? "bg-emerald-500/15 font-bold text-emerald-400"
-                          : "text-muted-foreground hover:bg-muted hover:text-foreground",
-                      )}
-                    >
-                      <span className="text-base">🐾</span>
-                      <span className="flex-1">Centro de Mando (6 Capas)</span>
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      href="/nodos-ia"
-                      className={cn(
-                        "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
-                        pathname.startsWith("/nodos-ia")
-                          ? "bg-amber-500/15 font-bold text-amber-400"
-                          : "text-muted-foreground hover:bg-muted hover:text-foreground",
-                      )}
-                    >
-                      <span className="text-base">🧠</span>
-                      <span className="flex-1">Monitor Nodos IA</span>
-                    </Link>
-                  </li>
-                </ul>
-              </>
-            )}
 
           <div className="my-4 border-t border-border" />
 

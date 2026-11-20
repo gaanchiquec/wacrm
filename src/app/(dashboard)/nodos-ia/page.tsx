@@ -1,10 +1,50 @@
 'use client'
 
-import { ExternalLink, RefreshCw } from 'lucide-react'
+import { ExternalLink, RefreshCw, ShieldAlert } from 'lucide-react'
 import { useState } from 'react'
+import { useAuth } from '@/hooks/use-auth'
+
+const ANIMALLIUM_OS_ENABLED = process.env.NEXT_PUBLIC_ENABLE_ANIMALLIUM_OS === 'true'
 
 export default function NodosIaPage() {
   const [key, setKey] = useState(0)
+  const { accountRole, profileLoading } = useAuth()
+
+  if (!ANIMALLIUM_OS_ENABLED) {
+    return (
+      <div className="flex h-[calc(100vh-4rem)] items-center justify-center p-6">
+        <div className="max-w-md rounded-xl border border-border bg-card p-6 text-center">
+          <ShieldAlert className="mx-auto mb-3 h-8 w-8 text-muted-foreground" />
+          <h2 className="text-base font-semibold text-foreground">Módulo desactivado</h2>
+          <p className="mt-1 text-xs text-muted-foreground">
+            El Monitor de Nodos IA no está habilitado en este entorno.
+          </p>
+        </div>
+      </div>
+    )
+  }
+
+  if (profileLoading) {
+    return (
+      <div className="flex h-[calc(100vh-4rem)] items-center justify-center text-sm text-muted-foreground">
+        Verificando permisos...
+      </div>
+    )
+  }
+
+  if (accountRole !== 'owner' && accountRole !== 'admin') {
+    return (
+      <div className="flex h-[calc(100vh-4rem)] items-center justify-center p-6">
+        <div className="max-w-md rounded-xl border border-border bg-card p-6 text-center">
+          <ShieldAlert className="mx-auto mb-3 h-8 w-8 text-amber-500" />
+          <h2 className="text-base font-semibold text-foreground">Acceso restringido</h2>
+          <p className="mt-1 text-xs text-muted-foreground">
+            Solo administradores y propietarios pueden acceder al Monitor Visual de Nodos IA.
+          </p>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="flex flex-col h-[calc(100vh-4rem)] w-full overflow-hidden bg-background">

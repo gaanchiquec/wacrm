@@ -152,13 +152,13 @@ const nextConfig: NextConfig = {
         ],
       },
       {
-        // Security headers on every response except the same-origin AI Core
-        // proxy routes embedded inside /centro-mando and /vista/*.
-        source: "/:path((?!api/animallium-proxy).*)",
+        // Security headers on every response except the same-origin AI Nodes
+        // monitor route embedded inside /nodos-ia and /vista/nodos-ia.
+        source: "/:path((?!api/animallium-proxy/dashboard$).*)",
         headers: [...SECURITY_HEADERS],
       },
       {
-        source: "/api/animallium-proxy/:path*",
+        source: "/api/animallium-proxy/dashboard",
         headers: [
           {
             key: "Strict-Transport-Security",

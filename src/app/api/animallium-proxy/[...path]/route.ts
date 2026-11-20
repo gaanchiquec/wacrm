@@ -2,18 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { requireRole, toErrorResponse } from "@/lib/auth/account";
 
 const ALLOWED_UPSTREAM_PREFIXES = [
-  "centro-mando",
   "dashboard",
-  "pack-creativo",
-  "Pack_Creativo_Lote_Piloto_Animallium.html",
   "api/dashboard/",
-  "api/proposals/",
-  "api/scout/",
-  "api/actions/",
-  "api/dropi/",
-  "api/dropshipping/",
-  "api/orders/",
-  "api/citas/",
 ];
 
 function isAllowedPath(joinedPath: string): boolean {
