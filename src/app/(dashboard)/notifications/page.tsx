@@ -15,7 +15,8 @@ import {
   MessageSquare,
   MessageSquarePlus,
   DollarSign,
-  Bot
+  Bot,
+  ShieldAlert
 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { Button } from "@/components/ui/button";
@@ -29,6 +30,7 @@ const TYPE_ICON: Record<Notification["type"], typeof Bell> = {
   new_message: MessageSquare,
   deal_created: DollarSign,
   ai_handoff: Bot,
+  control_tower_alert: ShieldAlert,
 };
 
 export default function NotificationsPage() {
@@ -291,6 +293,8 @@ export default function NotificationsPage() {
               Icon = DollarSign;
             } else if (n.type === "ai_handoff") {
               Icon = Bot;
+            } else if (n.type === "control_tower_alert" || lowerTitle.includes("[torre de control]")) {
+              Icon = ShieldAlert;
             }
             const isUnread = !n.read_at;
             return (
