@@ -206,7 +206,8 @@ export type NotificationType =
   | 'new_conversation'
   | 'new_message'
   | 'deal_created'
-  | 'ai_handoff';
+  | 'ai_handoff'
+  | 'control_tower_alert';
 
 export interface Notification {
   id: string;
